@@ -1,56 +1,16 @@
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
-import '../model/model.dart';
+import '../../model/model.dart';
 
-class PrintBill {
-  pw.Font? pg;
-  pw.ImageProvider? logo;
-
-  //PrintPage();
-  List<GetData>? dataList = [];
-  String? date;
-  String? staffID;
-  String? name;
-  String? dept;
-  String? location;
-  String? others;
-  String? twentyXAmount;
-  String? tenXAmount;
-  String? fiveXAmount;
-  String? coupon;
-  String? usdAmount;
-  String? sgdAmount;
-  String? twdAmount;
-  String? jpyAmount;
-  String? hkdAmount;
-  String? gbpAmount;
-  String? cnyAmount;
-  String? audAmount;
-  String? eurAmount;
-  String? foreignCurrenct;
-  String? oneThousandAmount;
-  String? fiveHundredAmount;
-  String? oneHundredAmount;
-  String? fiftyAmount;
-  String? twentyAmount;
-  String? tenAmount;
-  String? fiveAmount;
-  String? twoAmount;
-  String? oneAmount;
-  String? dotFiftyAmount;
-  String? dotTwentyFiveAmount;
-  String? noteAndCoins;
-  String? grandTotal;
-  String? netAmount;
-  double fs = 10;
-  // ignore: avoid_types_as_parameter_names
+class PrintShop {
+  PrintShop();
   String convertToDouble(num) {
     double number = double.parse(num);
-    if(number == 0.0){
+    if (number == 0.0) {
       return '';
     }
     String formattedNumber = NumberFormat('#,##0.00').format(number);
@@ -58,83 +18,50 @@ class PrintBill {
     return convert;
   }
 
-  Future<Uint8List> genPDF({
-    List<GetData>? dataList,
-    String? date,
-    String? staffID,
-    String? name,
-    String? dept,
-    String? location,
-    String? others,
-    String? twentyXAmount,
-    String? tenXAmount,
-    String? fiveXAmount,
-    String? coupon,
-    String? usdAmount,
-    String? sgdAmount,
-    String? twdAmount,
-    String? jpyAmount,
-    String? hkdAmount,
-    String? gbpAmount,
-    String? cnyAmount,
-    String? audAmount,
-    String? eurAmount,
-    String? foreignCurrenct,
-    String? oneThousandAmount,
-    String? fiveHundredAmount,
-    String? oneHundredAmount,
-    String? fiftyAmount,
-    String? twentyAmount,
-    String? tenAmount,
-    String? fiveAmount,
-    String? twoAmount,
-    String? oneAmount,
-    String? dotFiftyAmount,
-    String? dotTwentyFiveAmount,
-    String? noteAndCoins,
-    String? grandTotal,
-    String? netAmount,
-  }) async {
-    final pdf = pw.Document(version: PdfVersion.pdf_1_5, compress: true);
-    pg = pw.Font.ttf(await rootBundle.load('fonts/pgvim.ttf'));
-    this.dataList = dataList;
-    this.date = date;
-    this.staffID = staffID;
-    this.name = name;
-    this.dept = dept;
-    this.location = location;
-    final list = dataList!.first;
+  double fs = 10;
 
-    this.others = others;
-    this.twentyXAmount = twentyXAmount;
-    this.tenXAmount = tenXAmount;
-    this.fiveXAmount = fiveXAmount;
-    this.coupon = coupon;
-    this.usdAmount = usdAmount;
-    this.sgdAmount = sgdAmount;
-    this.twdAmount = twdAmount;
-    this.jpyAmount = jpyAmount;
-    this.hkdAmount = hkdAmount;
-    this.gbpAmount = gbpAmount;
-    this.cnyAmount = cnyAmount;
-    this.audAmount = audAmount;
-    this.eurAmount = eurAmount;
-    this.foreignCurrenct = foreignCurrenct;
-    this.oneThousandAmount = oneThousandAmount;
-    this.fiveHundredAmount = fiveHundredAmount;
-    this.oneHundredAmount = oneHundredAmount;
-    this.fiftyAmount = fiftyAmount;
-    this.twentyAmount = twentyAmount;
-    this.tenAmount = tenAmount;
-    this.fiveAmount = fiveAmount;
-    this.twoAmount = twoAmount;
-    this.oneAmount = oneAmount;
-    this.dotFiftyAmount = dotFiftyAmount;
-    this.dotTwentyFiveAmount = dotTwentyFiveAmount;
-    this.noteAndCoins = noteAndCoins;
-    this.grandTotal = grandTotal;
-    this.netAmount = netAmount;
-    logo = await imageFromAssetBundle('assets/Cashier_size-M.jpg');
+  Future<void> printShop(
+    date,
+    name,
+    staffID,
+    dept,
+    location,
+    List<GetData> dataList,
+    others,
+    twentyXAmount,
+    tenXAmount,
+    fiveXAmount,
+    coupon,
+    usdAmount,
+    oneThousandAmount,
+    sgdAmount,
+    fiveHundredAmount,
+    twdAmount,
+    oneHundredAmount,
+    jpyAmount,
+    fiftyAmount,
+    hkdAmount,
+    twentyAmount,
+    gbpAmount,
+    tenAmount,
+    cnyAmount,
+    fiveAmount,
+    audAmount,
+    twoAmount,
+    eurAmount,
+    oneAmount,
+    foreignCurrenct,
+    dotFiftyAmount,
+    dotTwentyFiveAmount,
+    noteAndCoins,
+    grandTotal,
+    netAmount,
+  ) async {
+    final pdf = pw.Document(version: PdfVersion.pdf_1_5, compress: true);
+    final list = dataList.first;
+    pw.Font? pg = pw.Font.ttf(await rootBundle.load('fonts/pgvim.ttf'));
+    pw.ImageProvider? logo =
+        await imageFromAssetBundle('assets/Cashier_size-M.jpg');
     pdf.addPage(
       pw.Page(
         pageFormat: PdfPageFormat.a4,
@@ -217,7 +144,7 @@ class PrintBill {
                       child: pw.Container(
                         width: 80,
                         alignment: pw.Alignment.centerLeft,
-                        child: pw.Image(logo!, dpi: 800),
+                        child: pw.Image(logo, dpi: 800),
                       ),
                     ),
                     pw.Positioned(
@@ -3440,10 +3367,7 @@ class PrintBill {
                                 height: 20,
                                 alignment: pw.Alignment.center,
                                 child: pw.Text(
-                                  '${DateFormat('dd')
-                            .format(DateTime.parse(date.toString()))}/${DateFormat('MM')
-                            .format(DateTime.parse(date.toString()))}/${DateFormat('yyyy')
-                            .format(DateTime.parse(date.toString()))}',
+                                  '${DateFormat('dd').format(DateTime.parse(date.toString()))}/${DateFormat('MM').format(DateTime.parse(date.toString()))}/${DateFormat('yyyy').format(DateTime.parse(date.toString()))}',
                                   style: pw.TextStyle(
                                     font: pg,
                                     fontSize: fs,
@@ -3531,7 +3455,7 @@ class PrintBill {
                       height: 20,
                       alignment: pw.Alignment.center,
                       child: pw.Text(
-                        '01/09/24',
+                        DateFormat('dd/MM/yyyy').format(date),
                         style: pw.TextStyle(
                           font: pg,
                           fontSize: fs,
@@ -3558,6 +3482,6 @@ class PrintBill {
         },
       ),
     );
-    return pdf.save();
+    await Printing.layoutPdf(onLayout: (PdfPageFormat format) => pdf.save());
   }
 }

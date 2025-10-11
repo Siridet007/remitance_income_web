@@ -1,12 +1,15 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:remittance_income_cm/model/model.dart';
 import 'package:remittance_income_cm/pdf/previewbill.dart';
+import 'package:remittance_income_cm/pdf/previewdaily.dart';
 import 'package:remittance_income_cm/pdf/previewpdf.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../model/upperCase.dart';
+import '../pdf/new/printShop.dart';
 import 'firstpage.dart';
 
 class PreviewPage extends StatefulWidget {
@@ -122,6 +125,7 @@ class _PreviewPageState extends State<PreviewPage> {
   String takeDateTime = '';
   String docNo = '';
   bool flagEnable = false;
+  String nameT = '';
 
   Future<List<GetPerson>?> getPerson(staffId) async {
     FormData formData = FormData.fromMap(
@@ -134,7 +138,7 @@ class _PreviewPageState extends State<PreviewPage> {
         "http://172.2.100.14/application/query_income_report_cm/fluttercon.php";
     try {
       Response response = await Dio().post(domain, data: formData);
-      var result;
+      List<GetPerson>? result;
       if (response.data != null && response.data.toString().trim().isNotEmpty) {
         result = GetPerson.fromJsonList(response.data);
       } else {
@@ -159,7 +163,7 @@ class _PreviewPageState extends State<PreviewPage> {
         "http://172.2.100.14/application/query_income_report_cm/fluttercon.php";
     try {
       Response response = await Dio().post(domain, data: formData);
-      var result;
+      List<GetShop>? result;
       if (response.data != null && response.data.toString().trim().isNotEmpty) {
         result = GetShop.fromJsonList(response.data);
       } else {
@@ -290,7 +294,7 @@ class _PreviewPageState extends State<PreviewPage> {
         "http://172.2.100.14/application/query_income_report_cm/fluttercon.php";
     try {
       Response response = await Dio().post(domain, data: formData);
-      var result;
+      List<GetShop>? result;
       if (response.data != null && response.data.toString().trim().isNotEmpty) {
         result = GetShop.fromJsonList(response.data);
       } else {
@@ -537,6 +541,27 @@ class _PreviewPageState extends State<PreviewPage> {
     );
   }
 
+  Future<dynamic> loadDialog() {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        child: Container(
+          width: 500,
+          height: 300,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            color: Colors.white,
+          ),
+          padding: const EdgeInsets.fromLTRB(50, 20, 20, 20),
+          child: LoadingAnimationWidget.halfTriangleDot(
+              color: Colors.pink, size: 150),
+        ),
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -560,8 +585,9 @@ class _PreviewPageState extends State<PreviewPage> {
     takeShopName = list.shopname.toString();
     getPerson(dataList!.first.usercode).then((value) {
       setState(() {
-        name.text = value!.first.name.toString();
+        name.text = value!.first.nameE.toString();
         dept.text = value.first.deptname.toString();
+        nameT = value.first.nameT.toString();
       });
     });
     takeDeptCode = list.deptcode.toString();
@@ -844,59 +870,6 @@ class _PreviewPageState extends State<PreviewPage> {
                 ? InkWell(
                     onTap: () {
                       setState(() {
-                        print('date => ' + takeDateTime);
-                        print('staff => ' + staffId.text);
-                        print('shhopchar => ' + takeShopChar);
-                        print('shopname => ' + takeShopName);
-                        print('dept => ' + takeDeptCode);
-                        print('credit => ' + creditCard.text);
-                        print('fc => ' + fcCoin.text);
-                        print('eshop => ' + eShop.text);
-                        print('voucher => ' + voucher.text);
-                        print('cheque => ' + cheque.text);
-                        print('payIn => ' + payIn.text);
-                        print('tax => ' + tax.text);
-                        print('giftCertificate => ' + giftCertificate.text);
-                        print('twentyX => ' + twentyXQuantity.text);
-                        print('tenX => ' + tenXQuantity.text);
-                        print('fiveX => ' + fiveXQuantity.text);
-                        print('usdQuantity => ' + usdQuantity.text);
-                        print('usdRate => ' + usdRate.text);
-                        print('sgdQuantity => ' + sgdQuantity.text);
-                        print('sgdRate => ' + sgdRate.text);
-                        print('twdQuantity => ' + twdQuantity.text);
-                        print('twdRate => ' + twdRate.text);
-                        print('jpyQuantity => ' + jpyQuantity.text);
-                        print('jpyRate => ' + jpyRate.text);
-                        print('hkdQuantity => ' + hkdQuantity.text);
-                        print('hkdRate => ' + hkdRate.text);
-                        print('gbpQuantity => ' + gbpQuantity.text);
-                        print('gbpRate => ' + gbpRate.text);
-                        print('cnyQuantity => ' + cnyQuantity.text);
-                        print('cnyRate => ' + cnyRate.text);
-                        print('audQuantity => ' + audQuantity.text);
-                        print('audRate => ' + audRate.text);
-                        print('eurQuantity => ' + eurQuantity.text);
-                        print('eurRate => ' + eurRate.text);
-                        print('oneThousandQuantity => ' +
-                            oneThousandQuantity.text);
-                        print(
-                            'fiveHundredQuatity => ' + fiveHundredQuatity.text);
-                        print('oneHundredQuatity => ' + oneHundredQuatity.text);
-                        print('fiftyQuantity => ' + fiftyQuantity.text);
-                        print('twentyQuantity => ' + twentyQuantity.text);
-                        print('tenQuantity => ' + tenQuantity.text);
-                        print('fiveQuantity => ' + fiveQuantity.text);
-                        print('twoQuantity => ' + twoQuantity.text);
-                        print('oneQuantity => ' + oneQuantity.text);
-                        print('dotFiftyQuantity => ' + dotFiftyQuantity.text);
-                        print('dotTwentyFiveQuantity => ' +
-                            dotTwentyFiveQuantity.text);
-                        print('netAmount => ' + netAmount.text);
-                        print('remark => ' + remark.text);
-                        print('firstColection => ' + firstCollection.text);
-                        print('coupon => ' + coupon.text);
-
                         saveDialog();
                       });
                     },
@@ -957,18 +930,60 @@ class _PreviewPageState extends State<PreviewPage> {
                       )
                     :*/
                 Container(),
-            widget.flagTab == 'Y'
+            widget.flagTab == 'A'
                 ? InkWell(
-                    onTap: () {
-                      print(others.text);
-                      Navigator.push(
+                    onTap: () async {
+                      loadDialog();
+                      await PrintShop()
+                          .printShop(
+                        today,
+                        nameT,
+                        staffId.text,
+                        dept.text,
+                        takeShopName,
+                        dataList!,
+                        others.text,
+                        twentyXAmount.text,
+                        tenXAmount.text,
+                        fiveXAmount.text,
+                        coupon.text,
+                        usdAmount.text,
+                        oneThousandAmount.text,
+                        sgdAmount.text,
+                        fiveHundredAmount.text,
+                        twdAmount.text,
+                        oneHundredAmount.text,
+                        jpyAmount.text,
+                        fiftyAmount.text,
+                        hkdAmount.text,
+                        twentyAmount.text,
+                        gbpAmount.text,
+                        tenAmount.text,
+                        cnyAmount.text,
+                        fiveAmount.text,
+                        audAmount.text,
+                        twoAmount.text,
+                        eurAmount.text,
+                        oneAmount.text,
+                        foreignCurrenct.text,
+                        dotFiftyAmount.text,
+                        dotTwentyFiveAmount.text,
+                        noteAndCoins.text,
+                        grandTotal.text,
+                        netAmount.text,
+                      )
+                          .then((value) {
+                        Navigator.of(context).pop();
+                      });
+
+                      /* Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => PreviewBill(
                             dataList: dataList!,
                             date: today.toString(),
                             staffID: staffId.text,
-                            name: name.text,
+                            name: nameT,
                             dept: dept.text,
                             location: takeShopName,
                             others: others.text,
@@ -1002,7 +1017,16 @@ class _PreviewPageState extends State<PreviewPage> {
                             netAmount: netAmount.text,
                           ),
                         ),
-                      );
+                      ); */
+                      /* Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PreviewDialy(
+                            dataList: dataList!,
+                            date: today.toString(),
+                          ),
+                        ),
+                      ); */
                     },
                     child: Container(
                       width: 140,
@@ -6744,78 +6768,88 @@ class _PreviewPageState extends State<PreviewPage> {
                       fontWeight: FontWeight.bold,
                     ),
                   )
-                : Container(
-                    width: 580,
-                    height: 50,
-                    padding: const EdgeInsets.only(left: 30, right: 10),
-                    decoration: BoxDecoration(
-                      color: locationTab
-                          ? const Color.fromRGBO(228, 60, 137, 1)
-                          : Colors.white,
-                      borderRadius: BorderRadius.circular(30),
-                      border: Border.all(
-                        color: !locationTab ? Colors.black : Colors.white,
-                      ),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton(
-                        dropdownColor: locationTab
-                            ? const Color.fromRGBO(228, 60, 137, 1)
-                            : Colors.white,
-                        icon: Icon(
-                          Icons.keyboard_arrow_down,
-                          size: 25,
-                          color: !locationTab ? Colors.black : Colors.white,
-                        ),
-                        items: shopList!.map((e) {
-                          return DropdownMenuItem(
-                            value: e,
-                            child: Text(
-                              e.shopname.toString(),
-                              style: TextStyle(
-                                fontSize: 20,
-                                color:
-                                    !locationTab ? Colors.black : Colors.white,
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            takeShop = value;
-                            takeShopChar = takeShop!.shopchar.toString();
-                            takeShopName = takeShop!.shopname.toString();
-                          });
-                        },
-                        onTap: () {
-                          setState(() {
-                            dateTab = false;
-                            personTab = false;
-                            locationTab = true;
-                            creditTab = false;
-                            fcCoinTab = false;
-                            othersTab = false;
-                            couponTab = false;
-                            cerrencyTab = false;
-                            remarkTab = false;
-                          });
-                        },
-                        value: takeShop,
+                : widget.typeSelect == 'TK' || widget.typeSelect == 'OTH'
+                    ? Text(
+                        widget.typeSelect == 'TK' ? 'Ticket' : 'อื่นๆ',
                         style: TextStyle(
-                          fontFamily: 'pg',
                           fontSize: 20,
                           color: !locationTab ? Colors.black : Colors.white,
                         ),
-                        hint: Text(
-                          location,
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: locationTab ? Colors.white : Colors.black,
+                      )
+                    : Container(
+                        width: 580,
+                        height: 50,
+                        padding: const EdgeInsets.only(left: 30, right: 10),
+                        decoration: BoxDecoration(
+                          color: locationTab
+                              ? const Color.fromRGBO(228, 60, 137, 1)
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(
+                            color: !locationTab ? Colors.black : Colors.white,
+                          ),
+                        ),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton(
+                            dropdownColor: locationTab
+                                ? const Color.fromRGBO(228, 60, 137, 1)
+                                : Colors.white,
+                            icon: Icon(
+                              Icons.keyboard_arrow_down,
+                              size: 25,
+                              color: !locationTab ? Colors.black : Colors.white,
+                            ),
+                            items: shopList!.map((e) {
+                              return DropdownMenuItem(
+                                value: e,
+                                child: Text(
+                                  e.shopname.toString(),
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: !locationTab
+                                        ? Colors.black
+                                        : Colors.white,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                takeShop = value;
+                                takeShopChar = takeShop!.shopchar.toString();
+                                takeShopName = takeShop!.shopname.toString();
+                              });
+                            },
+                            onTap: () {
+                              setState(() {
+                                dateTab = false;
+                                personTab = false;
+                                locationTab = true;
+                                creditTab = false;
+                                fcCoinTab = false;
+                                othersTab = false;
+                                couponTab = false;
+                                cerrencyTab = false;
+                                remarkTab = false;
+                              });
+                            },
+                            value: takeShop,
+                            style: TextStyle(
+                              fontFamily: 'pg',
+                              fontSize: 20,
+                              color: !locationTab ? Colors.black : Colors.white,
+                            ),
+                            hint: Text(
+                              location,
+                              style: TextStyle(
+                                fontSize: 20,
+                                color:
+                                    locationTab ? Colors.white : Colors.black,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
           ],
         ),
       ),
@@ -6922,11 +6956,12 @@ class _PreviewPageState extends State<PreviewPage> {
                               : () {
                                   getPerson(staffId.text).then((value) {
                                     setState(() {
-                                      name.text = value!.first.name.toString();
+                                      name.text = value!.first.nameE.toString();
                                       dept.text =
                                           value.first.deptname.toString();
                                       takeDeptCode =
                                           value.first.deptcode.toString();
+                                      nameT = value.first.nameT.toString();
                                     });
                                   });
                                 },
@@ -6955,9 +6990,9 @@ class _PreviewPageState extends State<PreviewPage> {
                         setState(() {
                           getPerson(value).then((value) {
                             setState(() {
-                              name.text = value!.first.name.toString();
+                              name.text = value!.first.nameE.toString();
                               dept.text = value.first.deptname.toString();
-                              print(name.text);
+                              nameT = value.first.nameT.toString();
                             });
                           });
                         });

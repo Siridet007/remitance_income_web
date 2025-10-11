@@ -1,14 +1,24 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:pdf/pdf.dart';
+import 'package:printing/printing.dart';
 import 'package:remittance_income_cm/model/model.dart';
 import 'package:remittance_income_cm/pdf/previewpdf.dart';
-import 'package:remittance_income_cm/pdf/printpage.dart';
 import 'package:remittance_income_cm/screens/addnewpage.dart';
 import 'package:remittance_income_cm/screens/previewpage.dart';
+
+import '../pdf/new/printTotal.dart';
+import '../pdf/previewType.dart';
+import '../pdf/previewdaily.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 class FirstPage extends StatefulWidget {
   final DateTime date;
@@ -41,6 +51,21 @@ class _FirstPageState extends State<FirstPage>
       activeIcon: Icon(Icons.games),
       label: 'Game',
     ),
+    const BottomNavigationBarItem(
+      icon: Icon(Icons.tram_outlined),
+      activeIcon: Icon(Icons.tram),
+      label: 'Tram',
+    ),
+    const BottomNavigationBarItem(
+      icon: Icon(CupertinoIcons.ticket),
+      activeIcon: Icon(CupertinoIcons.ticket_fill),
+      label: 'Ticket',
+    ),
+    const BottomNavigationBarItem(
+      icon: Icon(Icons.pending_outlined),
+      activeIcon: Icon(Icons.pending_rounded),
+      label: 'Others',
+    ),
   ];
   int _selectedIndex = 0;
   String typeSelect = "SOU";
@@ -53,189 +78,7 @@ class _FirstPageState extends State<FirstPage>
   bool loadData = false;
   int selectedRowIndexNew = 0;
   int selectedRowIndexComplete = 0;
-
-  final List<Map<String, String>> data = [
-    {
-      "incom_docno": "DOC001",
-      "incom_date": "2024-12-01",
-      "shopname": "Shop A",
-      "TOTAL": "5000"
-    },
-    {
-      "incom_docno": "DOC002",
-      "incom_date": "2024-12-02",
-      "shopname": "Shop B",
-      "TOTAL": "7500"
-    },
-    {
-      "incom_docno": "DOC003",
-      "incom_date": "2024-12-03",
-      "shopname": "Shop C",
-      "TOTAL": "8200"
-    },
-    {
-      "incom_docno": "DOC004",
-      "incom_date": "2024-12-04",
-      "shopname": "Shop D",
-      "TOTAL": "6700"
-    },
-    {
-      "incom_docno": "DOC005",
-      "incom_date": "2024-12-05",
-      "shopname": "Shop E",
-      "TOTAL": "5400"
-    },
-    {
-      "incom_docno": "DOC006",
-      "incom_date": "2024-12-06",
-      "shopname": "Shop F",
-      "TOTAL": "4900"
-    },
-    {
-      "incom_docno": "DOC007",
-      "incom_date": "2024-12-07",
-      "shopname": "Shop G",
-      "TOTAL": "7100"
-    },
-    {
-      "incom_docno": "DOC008",
-      "incom_date": "2024-12-08",
-      "shopname": "Shop H",
-      "TOTAL": "4300"
-    },
-    {
-      "incom_docno": "DOC009",
-      "incom_date": "2024-12-09",
-      "shopname": "Shop I",
-      "TOTAL": "6200"
-    },
-    {
-      "incom_docno": "DOC010",
-      "incom_date": "2024-12-10",
-      "shopname": "Shop J",
-      "TOTAL": "6800"
-    },
-    {
-      "incom_docno": "DOC011",
-      "incom_date": "2024-12-11",
-      "shopname": "Shop K",
-      "TOTAL": "5200"
-    },
-    {
-      "incom_docno": "DOC012",
-      "incom_date": "2024-12-12",
-      "shopname": "Shop L",
-      "TOTAL": "7400"
-    },
-    {
-      "incom_docno": "DOC013",
-      "incom_date": "2024-12-13",
-      "shopname": "Shop M",
-      "TOTAL": "5800"
-    },
-    {
-      "incom_docno": "DOC014",
-      "incom_date": "2024-12-14",
-      "shopname": "Shop N",
-      "TOTAL": "6700"
-    },
-    {
-      "incom_docno": "DOC015",
-      "incom_date": "2024-12-15",
-      "shopname": "Shop O",
-      "TOTAL": "7300"
-    },
-    {
-      "incom_docno": "DOC016",
-      "incom_date": "2024-12-16",
-      "shopname": "Shop P",
-      "TOTAL": "4100"
-    },
-    {
-      "incom_docno": "DOC017",
-      "incom_date": "2024-12-17",
-      "shopname": "Shop Q",
-      "TOTAL": "4900"
-    },
-    {
-      "incom_docno": "DOC018",
-      "incom_date": "2024-12-18",
-      "shopname": "Shop R",
-      "TOTAL": "7600"
-    },
-    {
-      "incom_docno": "DOC019",
-      "incom_date": "2024-12-19",
-      "shopname": "Shop S",
-      "TOTAL": "5200"
-    },
-    {
-      "incom_docno": "DOC020",
-      "incom_date": "2024-12-20",
-      "shopname": "Shop T",
-      "TOTAL": "6400"
-    },
-    {
-      "incom_docno": "DOC021",
-      "incom_date": "2024-12-21",
-      "shopname": "Shop U",
-      "TOTAL": "7500"
-    },
-    {
-      "incom_docno": "DOC022",
-      "incom_date": "2024-12-22",
-      "shopname": "Shop V",
-      "TOTAL": "6000"
-    },
-    {
-      "incom_docno": "DOC023",
-      "incom_date": "2024-12-23",
-      "shopname": "Shop W",
-      "TOTAL": "7300"
-    },
-    {
-      "incom_docno": "DOC024",
-      "incom_date": "2024-12-24",
-      "shopname": "Shop X",
-      "TOTAL": "7800"
-    },
-    {
-      "incom_docno": "DOC025",
-      "incom_date": "2024-12-25",
-      "shopname": "Shop Y",
-      "TOTAL": "5100"
-    },
-    {
-      "incom_docno": "DOC026",
-      "incom_date": "2024-12-26",
-      "shopname": "Shop Z",
-      "TOTAL": "6400"
-    },
-    {
-      "incom_docno": "DOC027",
-      "incom_date": "2024-12-27",
-      "shopname": "Shop AA",
-      "TOTAL": "7000"
-    },
-    {
-      "incom_docno": "DOC028",
-      "incom_date": "2024-12-28",
-      "shopname": "Shop AB",
-      "TOTAL": "5600"
-    },
-    {
-      "incom_docno": "DOC029",
-      "incom_date": "2024-12-29",
-      "shopname": "Shop AC",
-      "TOTAL": "7700"
-    },
-    {
-      "incom_docno": "DOC030",
-      "incom_date": "2024-12-30",
-      "shopname": "Shop AD",
-      "TOTAL": "6800"
-    }
-  ];
+  int selectedRowIndexApprove = 0;
 
   TextEditingController dateStart = TextEditingController();
   String takeDateStart = '';
@@ -244,12 +87,126 @@ class _FirstPageState extends State<FirstPage>
   String takeDocno = '';
   String takeFlag = '';
   List<GetShop>? shopList = [];
+  TextEditingController userName = TextEditingController();
+  TextEditingController password = TextEditingController();
+  List<GetData>? totalList = [];
+  List<TotalData>? sumList = [];
+  List<TotalType>? typeList = [];
+  double creditTot = 0;
+  double eshop = 0;
+  double voucherTot = 0;
+  double chequeTot = 0;
+  double payinTot = 0;
+  double fccoinTot = 0;
+  double uSDQty = 0;
+  double uSDRate = 0;
+  double sGDQty = 0;
+  double sGDRate = 0;
+  double tWDQty = 0;
+  double tWDRate = 0;
+  double jPYQty = 0;
+  double jPYRate = 0;
+  double hKDQty = 0;
+  double hKDRate = 0;
+  double gBPQty = 0;
+  double gBPRate = 0;
+  double cNYQty = 0;
+  double cNYRate = 0;
+  double aUDQty = 0;
+  double aUDRate = 0;
+  double eURQty = 0;
+  double eURRate = 0;
+  double tHB1000Qty = 0;
+  double tHB500Qty = 0;
+  double tHB100Qty = 0;
+  double tHB50Qty = 0;
+  double tHB20Qty = 0;
+  double tHB10Qty = 0;
+  double tHB5Qty = 0;
+  double tHB2Qty = 0;
+  double tHB1Qty = 0;
+  double tHB050Qty = 0;
+  double tHB025Qty = 0;
+  double tOTAL = 0;
+
+  double uSDQtyType = 0;
+  double uSDRateType = 0;
+  double sGDQtyType = 0;
+  double sGDRateType = 0;
+  double tWDQtyType = 0;
+  double tWDRateType = 0;
+  double jPYQtyType = 0;
+  double jPYRateType = 0;
+  double hKDQtyType = 0;
+  double hKDRateType = 0;
+  double gBPQtyType = 0;
+  double gBPRateType = 0;
+  double cNYQtyType = 0;
+  double cNYRateType = 0;
+  double aUDQtyType = 0;
+  double aUDRateType = 0;
+  double eURQtyType = 0;
+  double eURRateType = 0;
+  double tHB1000QtyType = 0;
+  double tHB500QtyType = 0;
+  double tHB100QtyType = 0;
+  double tHB50QtyType = 0;
+  double tHB20QtyType = 0;
+  double tHB10QtyType = 0;
+  double tHB5QtyType = 0;
+  double tHB2QtyType = 0;
+  double tHB1QtyType = 0;
+  double tHB050QtyType = 0;
+  double tHB025QtyType = 0;
+  double thTot = 0;
+  double foreignTot = 0;
+  double sumForeingCash = 0;
+  double sumTHCash = 0;
+
+  String? selectedPrint;
+
+  List<String> printList = ['Total', 'By Shop'];
+
+  String convertToDouble(num) {
+    double number = double.parse(num.toString());
+    if (number == 0.0) {
+      return '';
+    }
+    String formatedNumber = NumberFormat('#,##0.00').format(number);
+    return formatedNumber;
+  }
+
   Future<List<GetData>?> getReport(type, flag, date) async {
     FormData formData = FormData.fromMap(
       {
         "mode": "get_report",
         "type": type,
         "flag": flag,
+        "incom_date": date,
+      },
+    );
+    String domain =
+        "http://172.2.100.14/application/query_income_report_cm/fluttercon.php";
+    try {
+      Response response = await Dio().post(domain, data: formData);
+      List<GetData>? result;
+      if (response.data != null && response.data.toString().trim().isNotEmpty) {
+        result = GetData.fromJsonList(response.data);
+      } else {
+        result = null;
+      }
+
+      return result;
+    } catch (e) {
+      print('Error: $e');
+      return null;
+    }
+  }
+
+  Future<List<GetData>?> getReportTotal(date) async {
+    FormData formData = FormData.fromMap(
+      {
+        "mode": "get_report_total",
         "incom_date": date,
       },
     );
@@ -486,10 +443,396 @@ class _FirstPageState extends State<FirstPage>
     );
   }
 
+  Future<dynamic> userDialog(flag, actionText) {
+    return showDialog(
+      context: context,
+      builder: (context) => Material(
+        color: Colors.transparent,
+        child: Center(
+          child: Container(
+            width: 500,
+            height: 450,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  spreadRadius: 5,
+                  color: Colors.pink.shade100,
+                  offset: const Offset(10, 10),
+                ),
+              ],
+            ),
+            padding: const EdgeInsets.fromLTRB(50, 20, 20, 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: const [
+                    Icon(
+                      Icons.error_outline,
+                      color: Color.fromRGBO(228, 60, 137, 1),
+                      size: 70,
+                    ),
+                    Padding(padding: EdgeInsets.only(left: 20)),
+                    Text(
+                      'Confirm',
+                      style: TextStyle(
+                        fontSize: 50,
+                        color: Color.fromRGBO(228, 60, 137, 1),
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.none,
+                        fontFamily: 'pg',
+                      ),
+                    ),
+                  ],
+                ),
+                const Padding(padding: EdgeInsets.only(top: 10)),
+                Row(
+                  children: const [
+                    Padding(padding: EdgeInsets.only(left: 10)),
+                    Text(
+                      'ใส่ชื่อรหัสผู้ Approve',
+                      style: TextStyle(
+                        fontSize: 25,
+                        color: Color.fromRGBO(228, 60, 137, 1),
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.none,
+                        fontFamily: 'pg',
+                      ),
+                    ),
+                  ],
+                ),
+                const Padding(padding: EdgeInsets.only(top: 20)),
+                Row(
+                  children: [
+                    const SizedBox(
+                      width: 100,
+                      child: Text(
+                        'Username',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Color.fromRGBO(228, 60, 137, 1),
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.none,
+                          fontFamily: 'pg',
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 200,
+                      height: 50,
+                      child: TextField(
+                        controller: userName,
+                        style: const TextStyle(
+                          fontFamily: 'pg',
+                          fontSize: 20,
+                        ),
+                        //editing controller of this TextField
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const Padding(padding: EdgeInsets.only(top: 20)),
+                Row(
+                  children: [
+                    const SizedBox(
+                      width: 100,
+                      child: Text(
+                        'Password',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Color.fromRGBO(228, 60, 137, 1),
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.none,
+                          fontFamily: 'pg',
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 200,
+                      height: 50,
+                      child: TextField(
+                        controller: password,
+                        style: const TextStyle(
+                          fontFamily: 'pg',
+                          fontSize: 20,
+                        ),
+                        obscureText: true,
+                        //editing controller of this TextField
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const Padding(padding: EdgeInsets.only(top: 80)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ElevatedButton(
+                      style: const ButtonStyle(
+                        side: MaterialStatePropertyAll(
+                          BorderSide(
+                            style: BorderStyle.none,
+                          ),
+                        ),
+                        elevation: MaterialStatePropertyAll(0),
+                        backgroundColor: MaterialStatePropertyAll(
+                          Colors.white,
+                        ),
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          if (userName.text.isNotEmpty) {
+                            checkApprove(userName.text, password.text, flag);
+                          }
+                        });
+                      },
+                      child: Container(
+                        width: 180,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          color: Colors.green,
+                        ),
+                        alignment: Alignment.center,
+                        child: const Text(
+                          'ใช่',
+                          style: TextStyle(
+                            fontSize: 30,
+                            color: Colors.white,
+                            decoration: TextDecoration.none,
+                          ),
+                        ),
+                      ),
+                    ),
+                    ElevatedButton(
+                      style: const ButtonStyle(
+                        side: MaterialStatePropertyAll(
+                          BorderSide(
+                            style: BorderStyle.none,
+                          ),
+                        ),
+                        elevation: MaterialStatePropertyAll(0),
+                        backgroundColor: MaterialStatePropertyAll(
+                          Colors.white,
+                        ),
+                      ),
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Container(
+                        width: 180,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          color: Colors.red,
+                        ),
+                        alignment: Alignment.center,
+                        child: const Text(
+                          'ไม่ใช่',
+                          style: TextStyle(
+                            fontSize: 30,
+                            color: Colors.white,
+                            decoration: TextDecoration.none,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> checkApprove(userName, passWord, flag) async {
+    FormData formData = FormData.fromMap({
+      "param": "auth",
+      "user": userName,
+      "password": passWord,
+      "system_id": "0019",
+    });
+    String urlAPI = "http://172.2.100.14/usercontrol/datamodule/mainlib.php";
+    try {
+      Response response = await Dio().post(urlAPI, data: formData);
+      if (response.data['authdetail'].first['Active'] == 'Y') {
+        updateFlag(flag, takeDocno).then((value) {
+          Navigator.of(context).pop();
+          Navigator.of(context).pop();
+          loadData = false;
+          getReport(typeSelect, flagTab, takeDateStart).then((value) {
+            setState(() {
+              dataList = value;
+              takeDocno = dataList!.first.incomDocno.toString();
+              loadData = true;
+            });
+          });
+        });
+      } else {
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+        errorDialog();
+      }
+    } catch (e) {
+      Navigator.of(context).pop();
+      Navigator.of(context).pop();
+      errorDialog();
+    }
+  }
+
+  Future<dynamic> errorDialog() {
+    return showDialog(
+      context: context,
+      builder: (context) => Center(
+        child: Stack(
+          children: [
+            const SizedBox(
+              width: 510,
+              height: 310,
+            ),
+            Positioned(
+              top: 10,
+              left: 10,
+              child: Container(
+                width: 500,
+                height: 300,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  color: Colors.purple[100],
+                ),
+              ),
+            ),
+            Positioned(
+              child: Container(
+                width: 500,
+                height: 300,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  color: Colors.white,
+                ),
+                padding: const EdgeInsets.fromLTRB(50, 20, 20, 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: const [
+                        Icon(
+                          Icons.error_outline,
+                          color: Color.fromRGBO(228, 60, 137, 1),
+                          size: 70,
+                        ),
+                        Padding(padding: EdgeInsets.only(left: 20)),
+                        Text(
+                          'Alert',
+                          style: TextStyle(
+                            fontSize: 50,
+                            color: Color.fromRGBO(228, 60, 137, 1),
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.none,
+                            fontFamily: 'pg',
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Padding(padding: EdgeInsets.only(top: 10)),
+                    Row(
+                      children: const [
+                        Padding(padding: EdgeInsets.only(left: 10)),
+                        Text(
+                          'ผู้ใช้นี้ไม่สามารถ Approve ได้',
+                          style: TextStyle(
+                            fontSize: 25,
+                            color: Color.fromRGBO(228, 60, 137, 1),
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.none,
+                            fontFamily: 'pg',
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Padding(padding: EdgeInsets.only(top: 80)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        ElevatedButton(
+                          style: const ButtonStyle(
+                            side: MaterialStatePropertyAll(
+                              BorderSide(
+                                style: BorderStyle.none,
+                              ),
+                            ),
+                            elevation: MaterialStatePropertyAll(0),
+                            backgroundColor: MaterialStatePropertyAll(
+                              Colors.white,
+                            ),
+                          ),
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: Container(
+                            width: 180,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              color: const Color.fromRGBO(228, 60, 137, 1),
+                            ),
+                            alignment: Alignment.center,
+                            child: const Text(
+                              'เข้าใจแล้ว',
+                              style: TextStyle(
+                                fontSize: 30,
+                                color: Colors.white,
+                                decoration: TextDecoration.none,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<dynamic> loadDialog() {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        child: Container(
+          width: 500,
+          height: 300,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            color: Colors.white,
+          ),
+          padding: const EdgeInsets.fromLTRB(50, 20, 20, 20),
+          child: LoadingAnimationWidget.halfTriangleDot(
+              color: Colors.pink, size: 150),
+        ),
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
     getShop().then((value) {
       setState(() {
         shopList = value;
@@ -521,19 +864,21 @@ class _FirstPageState extends State<FirstPage>
           backgroundColor: Colors.pink[50],
           child: ListView(
             children: _navBarItems
-                .map((item) => ListTile(
-                      onTap: () {},
-                      title: Row(
-                        children: [
-                          item.icon,
-                          const Padding(padding: EdgeInsets.only(left: 20)),
-                          Text(
-                            item.label.toString(),
-                            style: const TextStyle(fontSize: 25),
-                          ),
-                        ],
-                      ),
-                    ))
+                .map(
+                  (item) => ListTile(
+                    onTap: () {},
+                    title: Row(
+                      children: [
+                        item.icon,
+                        const Padding(padding: EdgeInsets.only(left: 20)),
+                        Text(
+                          item.label.toString(),
+                          style: const TextStyle(fontSize: 25),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
                 .toList(),
           ),
         ),
@@ -594,6 +939,42 @@ class _FirstPageState extends State<FirstPage>
                           } else if (_selectedIndex == 3) {
                             typeSelect = "GM";
                             typeName = "Game";
+                            getReport(typeSelect, flagTab, takeDateStart)
+                                .then((value) {
+                              setState(() {
+                                dataList = value;
+                                takeDocno =
+                                    dataList!.first.incomDocno.toString();
+                                loadData = true;
+                              });
+                            });
+                          } else if (_selectedIndex == 4) {
+                            typeSelect = "TRM";
+                            typeName = "Tram";
+                            getReport(typeSelect, flagTab, takeDateStart)
+                                .then((value) {
+                              setState(() {
+                                dataList = value;
+                                takeDocno =
+                                    dataList!.first.incomDocno.toString();
+                                loadData = true;
+                              });
+                            });
+                          } else if (_selectedIndex == 5) {
+                            typeSelect = "TK";
+                            typeName = "Ticket";
+                            getReport(typeSelect, flagTab, takeDateStart)
+                                .then((value) {
+                              setState(() {
+                                dataList = value;
+                                takeDocno =
+                                    dataList!.first.incomDocno.toString();
+                                loadData = true;
+                              });
+                            });
+                          } else if (_selectedIndex == 6) {
+                            typeSelect = "OTH";
+                            typeName = "Others";
                             getReport(typeSelect, flagTab, takeDateStart)
                                 .then((value) {
                               setState(() {
@@ -674,6 +1055,7 @@ class _FirstPageState extends State<FirstPage>
                                       flagTab = 'Y';
                                     } else if (value == 2) {
                                       flagTab = 'A';
+                                      summaryMethod();
                                     } else if (value == 3) {
                                       flagTab = 'C';
                                     }
@@ -685,7 +1067,6 @@ class _FirstPageState extends State<FirstPage>
 
                                         takeDocno = dataList!.first.incomDocno
                                             .toString();
-                                        print(takeDocno == '');
                                         loadData = true;
                                       });
                                     });
@@ -694,7 +1075,7 @@ class _FirstPageState extends State<FirstPage>
                                 tabs: const [
                                   Tab(text: "New"),
                                   Tab(text: "Completed"),
-                                  //Tab(text: "Approved"),
+                                  Tab(text: "Approved"),
                                   Tab(text: "Canceled"),
                                 ],
                               ),
@@ -714,7 +1095,7 @@ class _FirstPageState extends State<FirstPage>
                             children: [
                               newTabWidget(context),
                               completeWidget(context),
-                              //approveWidget(context),
+                              approveWidget(context),
                               cancelWidget(context),
                             ],
                           ),
@@ -728,13 +1109,270 @@ class _FirstPageState extends State<FirstPage>
     );
   }
 
+  void summaryMethod() {
+    getReportTotal(takeDateStart).then((value) {
+      setState(() {
+        totalList = value;
+        sumList!.clear();
+        typeList!.clear();
+        creditTot = 0;
+        eshop = 0;
+        voucherTot = 0;
+        chequeTot = 0;
+        payinTot = 0;
+        uSDQty = 0;
+        uSDRate = 0;
+        sGDQty = 0;
+        sGDRate = 0;
+        tWDQty = 0;
+        tWDRate = 0;
+        jPYQty = 0;
+        jPYRate = 0;
+        hKDQty = 0;
+        hKDRate = 0;
+        gBPQty = 0;
+        gBPRate = 0;
+        cNYQty = 0;
+        cNYRate = 0;
+        aUDQty = 0;
+        aUDRate = 0;
+        eURQty = 0;
+        eURRate = 0;
+        tHB1000Qty = 0;
+        tHB500Qty = 0;
+        tHB100Qty = 0;
+        tHB50Qty = 0;
+        tHB20Qty = 0;
+        tHB10Qty = 0;
+        tHB5Qty = 0;
+        tHB2Qty = 0;
+        tHB1Qty = 0;
+        tHB050Qty = 0;
+        tHB025Qty = 0;
+        tOTAL = 0;
+
+        uSDQtyType = 0;
+        uSDRateType = 0;
+        sGDQtyType = 0;
+        sGDRateType = 0;
+        tWDQtyType = 0;
+        tWDRateType = 0;
+        jPYQtyType = 0;
+        jPYRateType = 0;
+        hKDQtyType = 0;
+        hKDRateType = 0;
+        gBPQtyType = 0;
+        gBPRateType = 0;
+        cNYQtyType = 0;
+        cNYRateType = 0;
+        aUDQtyType = 0;
+        aUDRateType = 0;
+        eURQtyType = 0;
+        eURRateType = 0;
+        tHB1000QtyType = 0;
+        tHB500QtyType = 0;
+        tHB100QtyType = 0;
+        tHB50QtyType = 0;
+        tHB20QtyType = 0;
+        tHB10QtyType = 0;
+        tHB5QtyType = 0;
+        tHB2QtyType = 0;
+        tHB1QtyType = 0;
+        tHB050QtyType = 0;
+        tHB025QtyType = 0;
+        thTot = 0;
+        foreignTot = 0;
+        sumForeingCash = 0;
+        sumTHCash = 0;
+        if (totalList!.first.idIncom == '') {
+        } else {
+          for (final total in totalList!) {
+            creditTot += double.parse(total.creditTot.toString());
+            eshop += double.parse(total.eshopTot.toString());
+            voucherTot += double.parse(total.voucherTot.toString());
+            chequeTot += double.parse(total.chequeTot.toString());
+            payinTot += double.parse(total.payinTot.toString());
+            fccoinTot += double.parse(total.fccoinTot.toString());
+            uSDQty += double.parse(total.uSDQty.toString());
+
+            sGDQty += double.parse(total.sGDQty.toString());
+
+            tWDQty += double.parse(total.tWDQty.toString());
+
+            jPYQty += double.parse(total.jPYQty.toString());
+
+            hKDQty += double.parse(total.hKDQty.toString());
+
+            gBPQty += double.parse(total.gBPQty.toString());
+
+            cNYQty += double.parse(total.cNYQty.toString());
+
+            aUDQty += double.parse(total.aUDQty.toString());
+
+            eURQty += double.parse(total.eURQty.toString());
+
+            tHB1000Qty += double.parse(total.tHB1000Qty.toString());
+            tHB500Qty += double.parse(total.tHB500Qty.toString());
+            tHB100Qty += double.parse(total.tHB100Qty.toString());
+            tHB50Qty += double.parse(total.tHB50Qty.toString());
+            tHB20Qty += double.parse(total.tHB20Qty.toString());
+            tHB10Qty += double.parse(total.tHB10Qty.toString());
+            tHB5Qty += double.parse(total.tHB5Qty.toString());
+            tHB2Qty += double.parse(total.tHB2Qty.toString());
+            tHB1Qty += double.parse(total.tHB1Qty.toString());
+            tHB050Qty += double.parse(total.tHB050Qty.toString());
+            tHB025Qty += double.parse(total.tHB025Qty.toString());
+            tOTAL += double.parse(total.tOTAL.toString());
+
+            uSDQtyType = double.parse(total.uSDQty!);
+            uSDRateType = double.parse(total.uSDRate!);
+            sGDQtyType = double.parse(total.sGDQty!);
+            sGDRateType = double.parse(total.sGDRate!);
+            tWDQtyType = double.parse(total.tWDQty!);
+            tWDRateType = double.parse(total.tWDRate!);
+            jPYQtyType = double.parse(total.jPYQty!);
+            jPYRateType = double.parse(total.jPYRate!);
+            hKDQtyType = double.parse(total.hKDQty!);
+            hKDRateType = double.parse(total.hKDRate!);
+            gBPQtyType = double.parse(total.gBPQty!);
+            gBPRateType = double.parse(total.gBPRate!);
+            cNYQtyType = double.parse(total.cNYQty!);
+            cNYRateType = double.parse(total.cNYRate!);
+            aUDQtyType = double.parse(total.aUDQty!);
+            aUDRateType = double.parse(total.aUDRate!);
+            eURQtyType = double.parse(total.eURQty!);
+            eURRateType = double.parse(total.eURRate!);
+            tHB1000QtyType = double.parse(total.tHB1000Qty!);
+            tHB500QtyType = double.parse(total.tHB500Qty!);
+            tHB100QtyType = double.parse(total.tHB100Qty!);
+            tHB50QtyType = double.parse(total.tHB50Qty!);
+            tHB20QtyType = double.parse(total.tHB20Qty!);
+            tHB10QtyType = double.parse(total.tHB10Qty!);
+            tHB5QtyType = double.parse(total.tHB5Qty!);
+            tHB2QtyType = double.parse(total.tHB2Qty!);
+            tHB1QtyType = double.parse(total.tHB1Qty!);
+            tHB050QtyType = double.parse(total.tHB050Qty!);
+            tHB025QtyType = double.parse(total.tHB025Qty!);
+
+            foreignTot = ((uSDQtyType * uSDRateType) +
+                (sGDQtyType * sGDRateType) +
+                (tWDQtyType * tWDRateType) +
+                (jPYQtyType * jPYRateType) +
+                (hKDQtyType * hKDRateType) +
+                (gBPQtyType * gBPRateType) +
+                (cNYQtyType * cNYRateType) +
+                (aUDQtyType * aUDRateType) +
+                (eURQtyType * eURRateType));
+            thTot = (1000 * tHB1000QtyType) +
+                (500 * tHB500QtyType) +
+                (100 * tHB100QtyType) +
+                (50 * tHB50QtyType) +
+                (20 * tHB20QtyType) +
+                (10 * tHB10QtyType) +
+                (5 * tHB5QtyType) +
+                (2 * tHB2QtyType) +
+                (1 * tHB1QtyType) +
+                (0.5 * tHB050QtyType) +
+                (0.25 * tHB025QtyType);
+
+            sumForeingCash += foreignTot;
+            sumTHCash += thTot;
+
+            typeList!.add(
+              TotalType(
+                shopName: total.shopcode,
+                thTot: thTot.toString(),
+                foreignTot: foreignTot.toString(),
+                creditTot: total.creditTot,
+                eShop: total.eshopTot,
+                voucherTot: total.voucherTot,
+                chequeTot: total.chequeTot,
+                payinTot: total.payinTot,
+              ),
+            );
+          }
+          uSDRate = double.parse(totalList!.first.uSDRate.toString());
+          sGDRate = double.parse(totalList!.first.sGDRate.toString());
+          tWDRate = double.parse(totalList!.first.tWDRate.toString());
+          jPYRate = double.parse(totalList!.first.jPYRate.toString());
+          hKDRate = double.parse(totalList!.first.hKDRate.toString());
+          gBPRate = double.parse(totalList!.first.gBPRate.toString());
+          cNYRate = double.parse(totalList!.first.cNYRate.toString());
+          aUDRate = double.parse(totalList!.first.aUDRate.toString());
+          eURRate = double.parse(totalList!.first.eURRate.toString());
+
+          sumList!.add(
+            TotalData(
+              creditTot: creditTot.toString(),
+              eShop: eshop.toString(),
+              voucherTot: voucherTot.toString(),
+              chequeTot: chequeTot.toString(),
+              payinTot: payinTot.toString(),
+              uSDQty: uSDQty.toString(),
+              uSDRate: uSDRate.toString(),
+              sGDQty: sGDQty.toString(),
+              sGDRate: sGDRate.toString(),
+              tWDQty: tWDQty.toString(),
+              tWDRate: tWDRate.toString(),
+              jPYQty: jPYQty.toString(),
+              jPYRate: jPYRate.toString(),
+              hKDQty: hKDQty.toString(),
+              hKDRate: hKDRate.toString(),
+              gBPQty: gBPQty.toString(),
+              gBPRate: gBPRate.toString(),
+              cNYQty: cNYQty.toString(),
+              cNYRate: cNYRate.toString(),
+              aUDQty: aUDQty.toString(),
+              aUDRate: aUDRate.toString(),
+              eURQty: eURQty.toString(),
+              eURRate: eURRate.toString(),
+              tHB1000Qty: tHB1000Qty.toString(),
+              tHB500Qty: tHB500Qty.toString(),
+              tHB100Qty: tHB100Qty.toString(),
+              tHB50Qty: tHB50Qty.toString(),
+              tHB20Qty: tHB20Qty.toString(),
+              tHB10Qty: tHB10Qty.toString(),
+              tHB5Qty: tHB5Qty.toString(),
+              tHB2Qty: tHB2Qty.toString(),
+              tHB1Qty: tHB1Qty.toString(),
+              tHB050Qty: tHB050Qty.toString(),
+              tHB025Qty: tHB025Qty.toString(),
+              tOTAL: tOTAL.toString(),
+              fccoinTot: fccoinTot.toString(),
+            ),
+          );
+        }
+      });
+    });
+  }
+
   Row buttonWidget(BuildContext context) {
     return Row(
       children: [
-        flagTab == 'Y' && takeDocno != ''
+        flagTab == 'A' && takeDocno != ''
             ? InkWell(
-                onTap: () {
-                  Navigator.push(
+                onTap: () async {
+                  //printTotalMethod();
+                  loadDialog();
+                  await PrintTotal()
+                      .printTotalMethod(
+                          sumList, sumTHCash, sumForeingCash, takeDateStart)
+                      .then((value) {
+                    Navigator.of(context).pop();
+                  });
+
+                  /* Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PreviewDialy(
+                        dataList: sumList!,
+                        date: takeDateStart,
+                        foreCash: sumForeingCash.toString(),
+                        thbCash: sumTHCash.toString(),
+                      ),
+                    ),
+                  ); */
+                  /* Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => PreviewPDFPage(
@@ -742,7 +1380,33 @@ class _FirstPageState extends State<FirstPage>
                         date: dateStart.text,
                       ),
                     ),
-                  );
+                  ); */
+                  /* Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PreviewDialy(
+                        dataList: sumList!,
+                        date: takeDateStart,
+                      ),
+                    ),
+                  ); */
+                  /* Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PreviewType(
+                        typeList: typeList!,
+                        date: takeDateStart,
+                        sumForeingCash: sumForeingCash.toString(),
+                        sumTHCash: sumTHCash.toString(),
+                        sumCredit: creditTot.toString(),
+                        sumEshop: eshop.toString(),
+                        sumPayin: payinTot.toString(),
+                        sumVoucher: voucherTot.toString(),
+                        sumCheque: chequeTot.toString(),
+                        total: tOTAL.toString(),
+                      ),
+                    ),
+                  ); */
                 },
                 child: Container(
                   width: 160,
@@ -770,7 +1434,78 @@ class _FirstPageState extends State<FirstPage>
                   ),
                 ),
               )
-            : Container(),
+            :
+            /* Container(
+                width: 160,
+                height: 60,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(25),
+                  color: Colors.blue[500],
+                ),
+                alignment: Alignment.center,
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: selectedPrint,
+                    hint: const Text(
+                      'Print',
+                      style: TextStyle(
+                        fontSize: 25,
+                        color: Colors.white,
+                      ),
+                    ),
+                    icon: const Icon(
+                      Icons.print,
+                      color: Colors.white,
+                    ),
+                    dropdownColor: Colors.blue[500],
+                    items: printList.map((String p) {
+                      return DropdownMenuItem<String>(
+                        value: p,
+                        child: Text(
+                          p,
+                          style: const TextStyle(
+                            fontSize: 25,
+                            color: Colors.white,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      if (value == 'Total') {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PreviewDialy(
+                              dataList: sumList!,
+                              date: takeDateStart,
+                            ),
+                          ),
+                        );
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PreviewType(
+                              typeList: typeList!,
+                              date: takeDateStart,
+                              sumForeingCash: sumForeingCash.toString(),
+                              sumTHCash: sumTHCash.toString(),
+                              sumCredit: creditTot.toString(),
+                              sumEshop: eshop.toString(),
+                              sumPayin: payinTot.toString(),
+                              sumVoucher: voucherTot.toString(),
+                              sumCheque: chequeTot.toString(),
+                              total: tOTAL.toString(),
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                ),
+              )
+            :  */
+            Container(),
         const Padding(
           padding: EdgeInsets.only(left: 20),
         ),
@@ -847,7 +1582,7 @@ class _FirstPageState extends State<FirstPage>
           ),
         ),
         const Padding(padding: EdgeInsets.only(left: 20)),
-        /*InkWell(
+        InkWell(
           onTap: flagTab == 'N' || flagTab == 'C' || flagTab == 'A'
               ? null
               : () {
@@ -877,7 +1612,7 @@ class _FirstPageState extends State<FirstPage>
             ),
           ),
         ),
-        const Padding(padding: EdgeInsets.only(left: 20)),*/
+        const Padding(padding: EdgeInsets.only(left: 20)),
         InkWell(
           onTap: flagTab == 'A' || flagTab == 'C'
               ? null
@@ -1036,6 +1771,9 @@ class _FirstPageState extends State<FirstPage>
                   loadData = true;
                 });
               });
+              if (flagTab == 'A') {
+                summaryMethod();
+              }
             });
           },
           child: Container(
@@ -1143,7 +1881,6 @@ class _FirstPageState extends State<FirstPage>
                                 selectedRowIndexComplete =
                                     (selected == true ? index : null)!;
                                 takeDocno = row.incomDocno.toString();
-                                print(takeDocno);
                               });
                             },
                       selected: false,
@@ -1421,6 +2158,20 @@ class _FirstPageState extends State<FirstPage>
                   (index) {
                     final row = dataList![index];
                     return DataRow(
+                      color: MaterialStateProperty.resolveWith<Color?>(
+                        (states) => selectedRowIndexApprove == index
+                            ? Colors.pink[100]
+                            : null,
+                      ),
+                      onSelectChanged: dataList!.first.incomDocno!.isEmpty
+                          ? null
+                          : (selected) {
+                              setState(() {
+                                selectedRowIndexApprove =
+                                    (selected == true ? index : null)!;
+                                takeDocno = row.incomDocno.toString();
+                              });
+                            },
                       cells: [
                         DataCell(
                           Text(
@@ -1570,7 +2321,6 @@ class _FirstPageState extends State<FirstPage>
                                 selectedRowIndexNew =
                                     (selected == true ? index : null)!;
                                 takeDocno = row.incomDocno.toString();
-                                print(takeDocno);
                               });
                             },
                       selected: false,

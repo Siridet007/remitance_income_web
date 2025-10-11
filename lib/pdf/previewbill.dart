@@ -160,7 +160,6 @@ class _PreviewBillState extends State<PreviewBill> {
     noteAndCoins = widget.noteAndCoins;
     grandTotal = widget.grandTotal;
     netAmount = widget.netAmount;
-    print('dsdsdd $others');
     PrintBill()
         .genPDF(
       dataList: dataList,

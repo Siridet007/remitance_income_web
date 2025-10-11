@@ -13,6 +13,7 @@ class PrintPage {
   //PrintPage();
   List<GetData>? dataList = [];
   String? date;
+  // ignore: avoid_types_as_parameter_names
   String convertToDouble(num) {
     double number = double.parse(num);
     String formattedNumber = NumberFormat('#,##0.00').format(number);
@@ -221,62 +222,94 @@ class PrintPage {
             ),
           ),
           pw.ListView.builder(
-              itemCount: dataList!.length,
-              itemBuilder: (context, index) {
-                return pw.Row(
-                  children: [
-                    pw.Container(
-                      width: 80,
-                      height: 30,
-                      decoration: pw.BoxDecoration(border: pw.Border.all()),
-                      child: pw.Column(
-                        mainAxisAlignment: pw.MainAxisAlignment.center,
-                        children: [
-                          pw.Text(
-                            '${index + 1}',
-                            textAlign: pw.TextAlign.center,
-                            style: pw.TextStyle(font: pg),
-                          ),
-                        ],
-                      ),
+            itemCount: dataList!.length,
+            itemBuilder: (context, index) {
+              return pw.Row(
+                children: [
+                  pw.Container(
+                    width: 80,
+                    height: 30,
+                    decoration: pw.BoxDecoration(border: pw.Border.all()),
+                    child: pw.Column(
+                      mainAxisAlignment: pw.MainAxisAlignment.center,
+                      children: [
+                        pw.Text(
+                          '${index + 1}',
+                          textAlign: pw.TextAlign.center,
+                          style: pw.TextStyle(font: pg),
+                        ),
+                      ],
                     ),
-                    pw.Container(
-                      width: 300,
-                      height: 30,
-                      decoration: pw.BoxDecoration(border: pw.Border.all()),
-                      padding: const pw.EdgeInsets.only(left: 5),
-                      child: pw.Column(
-                        crossAxisAlignment: pw.CrossAxisAlignment.start,
-                        mainAxisAlignment: pw.MainAxisAlignment.center,
-                        children: [
-                          pw.Text(
-                            '${dataList![index].shopname}',
-                            textAlign: pw.TextAlign.left,
-                            style: pw.TextStyle(font: pg),
-                          ),
-                        ],
-                      ),
+                  ),
+                  pw.Container(
+                    width: 300,
+                    height: 30,
+                    decoration: pw.BoxDecoration(border: pw.Border.all()),
+                    padding: const pw.EdgeInsets.only(left: 5),
+                    child: pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      mainAxisAlignment: pw.MainAxisAlignment.center,
+                      children: [
+                        pw.Text(
+                          '${dataList![index].shopname}',
+                          textAlign: pw.TextAlign.left,
+                          style: pw.TextStyle(font: pg),
+                        ),
+                      ],
                     ),
-                    pw.Container(
-                      width: 140,
-                      height: 30,
-                      decoration: pw.BoxDecoration(border: pw.Border.all()),
-                      padding: const pw.EdgeInsets.only(right: 5),
-                      child: pw.Column(
-                        mainAxisAlignment: pw.MainAxisAlignment.center,
-                        crossAxisAlignment: pw.CrossAxisAlignment.end,
-                        children: [
-                          pw.Text(
-                            convertToDouble(dataList![index].tOTAL),
-                            textAlign: pw.TextAlign.right,
-                            style: pw.TextStyle(font: pg),
-                          ),
-                        ],
-                      ),
+                  ),
+                  pw.Container(
+                    width: 140,
+                    height: 30,
+                    decoration: pw.BoxDecoration(border: pw.Border.all()),
+                    padding: const pw.EdgeInsets.only(right: 5),
+                    child: pw.Column(
+                      mainAxisAlignment: pw.MainAxisAlignment.center,
+                      crossAxisAlignment: pw.CrossAxisAlignment.end,
+                      children: [
+                        pw.Text(
+                          convertToDouble(dataList![index].tOTAL),
+                          textAlign: pw.TextAlign.right,
+                          style: pw.TextStyle(font: pg),
+                        ),
+                      ],
                     ),
-                  ],
-                );
-              }),
+                  ),
+                ],
+              );
+            },
+          ),
+          pw.Row(
+            children: [
+              pw.Container(
+                width: 380,
+                height: 30,
+                decoration: pw.BoxDecoration(
+                  border: pw.Border.all(),
+                ),
+                alignment: pw.Alignment.center,
+                child: pw.Text(
+                  'รายได้รวม',
+                  textAlign: pw.TextAlign.center,
+                  style: pw.TextStyle(font: pg),
+                ),
+              ),
+              pw.Container(
+                width: 140,
+                height: 30,
+                decoration: pw.BoxDecoration(
+                  border: pw.Border.all(),
+                ),
+                alignment: pw.Alignment.centerRight,
+                padding: const pw.EdgeInsets.only(right: 5),
+                child: pw.Text(
+                  convertToDouble(dataList!.fold(0.0, (sum, item) => sum + double.parse(item.tOTAL!)).toString()),
+                  textAlign: pw.TextAlign.center,
+                  style: pw.TextStyle(font: pg),
+                ),
+              ),
+            ],
+          ),
         ],
       )
     ];

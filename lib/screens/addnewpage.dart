@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -117,6 +115,8 @@ class _AddNewPageState extends State<AddNewPage> {
   String takeDeptCode = '';
   DateTime today = DateTime.now();
   String takeDateTime = '';
+  List<GetExchange>? exchangeList = [];
+  String nameT = '';
 
   String addLeadingZeroIfNeeded(String input) {
     if (input.startsWith('.')) {
@@ -318,6 +318,30 @@ class _AddNewPageState extends State<AddNewPage> {
       print(takeDateTime);
     });
     //print(sendDate);
+  }
+
+  Future<List<GetExchange>?> getExchange() async {
+    FormData formData = FormData.fromMap(
+      {
+        "mode": "exchang_rate",
+      },
+    );
+    String domain =
+        "http://172.2.100.14/application/query_income_report_cm/fluttercon.php";
+    try {
+      Response response = await Dio().post(domain, data: formData);
+      List<GetExchange>? result;
+      if (response.data != null && response.data.toString().trim().isNotEmpty) {
+        result = GetExchange.fromJsonList(response.data);
+      } else {
+        result = null;
+      }
+
+      return result;
+    } catch (e) {
+      print('Error: $e');
+      return null;
+    }
   }
 
   Future<dynamic> saveDialog() {
@@ -536,9 +560,27 @@ class _AddNewPageState extends State<AddNewPage> {
   void initState() {
     super.initState();
     takeDateTime = DateFormat('yyyy-MM-dd').format(today);
+    takeShopChar = widget.typeSelect;
+    takeShopName = widget.typeName;
+    print(takeShopChar);
+    print(takeShopName);
     getShop(widget.typeSelect).then((value) {
       setState(() {
         shopList = value;
+      });
+    });
+    getExchange().then((value) {
+      setState(() {
+        exchangeList = value;
+        usdRate.text = exchangeList![0].buying!;
+        eurRate.text = exchangeList![1].buying!;
+        gbpRate.text = exchangeList![2].buying!;
+        jpyRate.text = exchangeList![3].buying!;
+        sgdRate.text = exchangeList![4].buying!;
+        hkdRate.text = exchangeList![5].buying!;
+        audRate.text = exchangeList![6].buying!;
+        cnyRate.text = exchangeList![7].buying!;
+        twdRate.text = exchangeList![8].buying!;
       });
     });
   }
@@ -617,7 +659,7 @@ class _AddNewPageState extends State<AddNewPage> {
   SizedBox dateSelect() {
     return SizedBox(
       width: 600,
-      height: 350,
+      height: 400,
       child: Card(
         elevation: 50,
         color: Colors.white,
@@ -4925,6 +4967,9 @@ class _AddNewPageState extends State<AddNewPage> {
                             if (noteAndCoins.text.isEmpty) {
                               noteAndCoins.text = '0';
                             }
+                            if (coupon.text.isEmpty) {
+                              coupon.text = '0';
+                            }
                             grandTotal.text = (double.parse(creditCard.text) +
                                     double.parse(fcCoin.text) +
                                     double.parse(others.text) +
@@ -6534,70 +6579,80 @@ class _AddNewPageState extends State<AddNewPage> {
                 color: !locationTab ? Colors.black : Colors.white,
               ),
             ),
-            Container(
-              width: 580,
-              height: 50,
-              padding: const EdgeInsets.only(left: 30, right: 10),
-              decoration: BoxDecoration(
-                color: locationTab
-                    ? const Color.fromRGBO(228, 60, 137, 1)
-                    : Colors.white,
-                borderRadius: BorderRadius.circular(30),
-                border: Border.all(
-                  color: !locationTab ? Colors.black : Colors.white,
-                ),
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton(
-                  dropdownColor: locationTab
-                      ? const Color.fromRGBO(228, 60, 137, 1)
-                      : Colors.white,
-                  icon: Icon(
-                    Icons.keyboard_arrow_down,
-                    size: 25,
-                    color: !locationTab ? Colors.black : Colors.white,
-                  ),
-                  items: shopList!.map((e) {
-                    return DropdownMenuItem(
-                      value: e,
-                      child: Text(
-                        e.shopname.toString(),
+            const Padding(padding: EdgeInsets.only(top: 10)),
+            widget.typeSelect == 'TK' || widget.typeSelect == 'OTH'
+                ? Text(
+                    widget.typeSelect == 'TK' ? 'Ticket' : 'อื่นๆ',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: !locationTab ? Colors.black : Colors.white,
+                    ),
+                  )
+                : Container(
+                    width: 580,
+                    height: 50,
+                    padding: const EdgeInsets.only(left: 30, right: 10),
+                    decoration: BoxDecoration(
+                      color: locationTab
+                          ? const Color.fromRGBO(228, 60, 137, 1)
+                          : Colors.white,
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(
+                        color: !locationTab ? Colors.black : Colors.white,
+                      ),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton(
+                        dropdownColor: locationTab
+                            ? const Color.fromRGBO(228, 60, 137, 1)
+                            : Colors.white,
+                        icon: Icon(
+                          Icons.keyboard_arrow_down,
+                          size: 25,
+                          color: !locationTab ? Colors.black : Colors.white,
+                        ),
+                        items: shopList!.map((e) {
+                          return DropdownMenuItem(
+                            value: e,
+                            child: Text(
+                              e.shopname.toString(),
+                              style: TextStyle(
+                                fontSize: 20,
+                                color:
+                                    !locationTab ? Colors.black : Colors.white,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            takeShop = value;
+                            takeShopChar = takeShop!.shopchar.toString();
+                            takeShopName = takeShop!.shopname.toString();
+                          });
+                        },
+                        onTap: () {
+                          setState(() {
+                            dateTab = false;
+                            personTab = false;
+                            locationTab = true;
+                            creditTab = false;
+                            fcCoinTab = false;
+                            othersTab = false;
+                            couponTab = false;
+                            cerrencyTab = false;
+                            remarkTab = false;
+                          });
+                        },
+                        value: takeShop,
                         style: TextStyle(
+                          fontFamily: 'pg',
                           fontSize: 20,
                           color: !locationTab ? Colors.black : Colors.white,
                         ),
                       ),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      takeShop = value;
-                      takeShopChar = takeShop!.shopchar.toString();
-                      takeShopName = takeShop!.shopname.toString();
-                    });
-                  },
-                  onTap: () {
-                    setState(() {
-                      dateTab = false;
-                      personTab = false;
-                      locationTab = true;
-                      creditTab = false;
-                      fcCoinTab = false;
-                      othersTab = false;
-                      couponTab = false;
-                      cerrencyTab = false;
-                      remarkTab = false;
-                    });
-                  },
-                  value: takeShop,
-                  style: TextStyle(
-                    fontFamily: 'pg',
-                    fontSize: 20,
-                    color: !locationTab ? Colors.black : Colors.white,
+                    ),
                   ),
-                ),
-              ),
-            ),
           ],
         ),
       ),
@@ -6704,11 +6759,12 @@ class _AddNewPageState extends State<AddNewPage> {
                               : () {
                                   getPerson(staffId.text).then((value) {
                                     setState(() {
-                                      name.text = value!.first.name.toString();
+                                      name.text = value!.first.nameE.toString();
                                       dept.text =
                                           value.first.deptname.toString();
                                       takeDeptCode =
                                           value.first.deptcode.toString();
+                                          nameT = value.first.nameT.toString();
                                     });
                                   });
                                 },
@@ -6736,9 +6792,10 @@ class _AddNewPageState extends State<AddNewPage> {
                         setState(() {
                           getPerson(value).then((value) {
                             setState(() {
-                              name.text = value!.first.name.toString();
+                              name.text = value!.first.nameE.toString();
                               dept.text = value.first.deptname.toString();
                               takeDeptCode = value.first.deptcode.toString();
+                              nameT = value.first.nameT.toString();
                             });
                           });
                         });

@@ -1,35 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:printing/printing.dart';
 import 'package:pdf/pdf.dart';
-import 'package:remittance_income_cm/pdf/printpage.dart';
+import 'package:printing/printing.dart';
+import 'package:remittance_income_cm/pdf/printdaily.dart';
 
 import '../model/model.dart';
 
-class PreviewPDFPage extends StatefulWidget {
-  final List<GetData> dataList;
+class PreviewDialy extends StatefulWidget {
+  final List<TotalData> dataList;
   final String date;
-  const PreviewPDFPage({super.key, required this.dataList, required this.date});
+  final String foreCash;
+  final String thbCash;
+  const PreviewDialy(
+      {super.key,
+      required this.dataList,
+      required this.date,
+      required this.foreCash,
+      required this.thbCash});
 
   @override
-  State<PreviewPDFPage> createState() => _PreviewPDFPageState();
+  State<PreviewDialy> createState() => _PreviewDialyState();
 }
 
-class _PreviewPDFPageState extends State<PreviewPDFPage> {
+class _PreviewDialyState extends State<PreviewDialy> {
   Uint8List? report;
-  List<GetData>? dataList = [];
+  List<TotalData>? datalist = [];
   String? date;
+  String? foreCash;
+  String? thbCash;
   @override
   void initState() {
     super.initState();
-    dataList = widget.dataList;
+    datalist = widget.dataList;
     date = widget.date;
-    //print(jsonEncode(dataList));
-    PrintPage().genPDF(dataList: dataList, date: date).then((value) {
-      setState(() {
-        report = value;
-      });
-    });
+    foreCash = widget.foreCash;
+    thbCash = widget.thbCash;
+    PrintDaily()
+        .genPDF(
+          dataList: datalist,
+          date: date,
+          foreCash: foreCash,
+          thbCash: thbCash,
+        )
+        .then((value) => report = value);
   }
 
   @override
