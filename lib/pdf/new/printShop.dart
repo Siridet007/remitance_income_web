@@ -56,6 +56,8 @@ class PrintShop {
     noteAndCoins,
     grandTotal,
     netAmount,
+    approvename,
+    dateapprove,
   ) async {
     final pdf = pw.Document(version: PdfVersion.pdf_1_5, compress: true);
     final list = dataList.first;
@@ -3393,7 +3395,7 @@ class PrintShop {
                                 height: 25,
                                 alignment: pw.Alignment.bottomCenter,
                                 child: pw.Text(
-                                  '_________________',
+                                  approvename.split(" ")[0],
                                   style: pw.TextStyle(
                                     font: pg,
                                     fontSize: fs,
@@ -3405,7 +3407,7 @@ class PrintShop {
                                 height: 25,
                                 alignment: pw.Alignment.bottomCenter,
                                 child: pw.Text(
-                                  '(                             )',
+                                  '( $approvename )',
                                   style: pw.TextStyle(
                                     font: pg,
                                     fontSize: fs,
@@ -3417,7 +3419,7 @@ class PrintShop {
                                 height: 20,
                                 alignment: pw.Alignment.center,
                                 child: pw.Text(
-                                  '____/______/______',
+                                  '$dateapprove',
                                   style: pw.TextStyle(
                                     font: pg,
                                     fontSize: fs,

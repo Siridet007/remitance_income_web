@@ -126,6 +126,8 @@ class _PreviewPageState extends State<PreviewPage> {
   String docNo = '';
   bool flagEnable = false;
   String nameT = '';
+  String approveName = '';
+  String approveDate = '';
 
   Future<List<GetPerson>?> getPerson(staffId) async {
     FormData formData = FormData.fromMap(
@@ -720,6 +722,8 @@ class _PreviewPageState extends State<PreviewPage> {
     netAmount.text =
         (double.parse(grandTotal.text) - double.parse(refund.text)).toString();
     remark.text = list.remark.toString();
+    approveName = list.approvename!;
+    approveDate = list.approvedate!;
   }
 
   @override
@@ -971,6 +975,8 @@ class _PreviewPageState extends State<PreviewPage> {
                         noteAndCoins.text,
                         grandTotal.text,
                         netAmount.text,
+                        approveName,
+                        approveDate,
                       )
                           .then((value) {
                         Navigator.of(context).pop();

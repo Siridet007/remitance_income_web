@@ -1,5 +1,3 @@
-import 'dart:math';
-
 class GetPerson {
   String? code;
   String? nameE;
@@ -114,60 +112,67 @@ class GetData {
   String? tOTALCOUPON;
   String? tOTALREFUND;
   String? tOTALROUND1;
+  String? approvecode;
+  String? approvename;
+  String? approvedate;
 
-  GetData(
-      {this.idIncom,
-      this.incomDocno,
-      this.incomDate,
-      this.usercode,
-      this.shopcode,
-      this.shopname,
-      this.deptcode,
-      this.creditTot,
-      this.fccoinTot,
-      this.eshopTot,
-      this.voucherTot,
-      this.chequeTot,
-      this.payinTot,
-      this.taxTot,
-      this.giftTot,
-      this.coupon20Qty,
-      this.coupon10Qty,
-      this.coupon5Qty,
-      this.uSDQty,
-      this.uSDRate,
-      this.sGDQty,
-      this.sGDRate,
-      this.tWDQty,
-      this.tWDRate,
-      this.jPYQty,
-      this.jPYRate,
-      this.hKDQty,
-      this.hKDRate,
-      this.gBPQty,
-      this.gBPRate,
-      this.cNYQty,
-      this.cNYRate,
-      this.aUDQty,
-      this.aUDRate,
-      this.eURQty,
-      this.eURRate,
-      this.tHB1000Qty,
-      this.tHB500Qty,
-      this.tHB100Qty,
-      this.tHB50Qty,
-      this.tHB20Qty,
-      this.tHB10Qty,
-      this.tHB5Qty,
-      this.tHB2Qty,
-      this.tHB1Qty,
-      this.tHB050Qty,
-      this.tHB025Qty,
-      this.tOTAL,
-      this.remark,
-      this.tOTALCOUPON,
-      this.tOTALREFUND,
-      this.tOTALROUND1});
+  GetData({
+    this.idIncom,
+    this.incomDocno,
+    this.incomDate,
+    this.usercode,
+    this.shopcode,
+    this.shopname,
+    this.deptcode,
+    this.creditTot,
+    this.fccoinTot,
+    this.eshopTot,
+    this.voucherTot,
+    this.chequeTot,
+    this.payinTot,
+    this.taxTot,
+    this.giftTot,
+    this.coupon20Qty,
+    this.coupon10Qty,
+    this.coupon5Qty,
+    this.uSDQty,
+    this.uSDRate,
+    this.sGDQty,
+    this.sGDRate,
+    this.tWDQty,
+    this.tWDRate,
+    this.jPYQty,
+    this.jPYRate,
+    this.hKDQty,
+    this.hKDRate,
+    this.gBPQty,
+    this.gBPRate,
+    this.cNYQty,
+    this.cNYRate,
+    this.aUDQty,
+    this.aUDRate,
+    this.eURQty,
+    this.eURRate,
+    this.tHB1000Qty,
+    this.tHB500Qty,
+    this.tHB100Qty,
+    this.tHB50Qty,
+    this.tHB20Qty,
+    this.tHB10Qty,
+    this.tHB5Qty,
+    this.tHB2Qty,
+    this.tHB1Qty,
+    this.tHB050Qty,
+    this.tHB025Qty,
+    this.tOTAL,
+    this.remark,
+    this.tOTALCOUPON,
+    this.tOTALREFUND,
+    this.tOTALROUND1,
+    this.approvecode,
+    this.approvename,
+    this.approvedate,
+  });
 
   GetData.fromJson(Map<String, dynamic> json) {
     idIncom = json['id_incom'] ?? '';
@@ -222,6 +227,9 @@ class GetData {
     tOTALCOUPON = json['TOTAL_COUPON'] ?? '0';
     tOTALREFUND = json['TOTAL_REFUND'] ?? '0';
     tOTALROUND1 = json['TOTAL_ROUND1'] ?? '0';
+    approvecode = json['approvecode'] ?? '';
+    approvename = json['approvename'] ?? '';
+    approvedate = json['approvedate'] ?? '';
   }
 
   Map<String, dynamic> toJson() {
@@ -278,6 +286,9 @@ class GetData {
     data['TOTAL_COUPON'] = tOTALCOUPON;
     data['TOTAL_REFUND'] = tOTALREFUND;
     data['TOTAL_ROUND1'] = tOTALROUND1;
+    data['approvecode'] = approvecode;
+    data['approvename'] = approvename;
+    data['approvedate'] = approvedate;
     return data;
   }
 

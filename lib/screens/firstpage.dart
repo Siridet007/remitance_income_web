@@ -166,6 +166,7 @@ class _FirstPageState extends State<FirstPage>
   String? selectedPrint;
 
   List<String> printList = ['Total', 'By Shop'];
+  String shopName = '';
 
   String convertToDouble(num) {
     double number = double.parse(num.toString());
@@ -279,165 +280,165 @@ class _FirstPageState extends State<FirstPage>
     }
   }
 
-  Future<dynamic> updateDialog(flag, actionText) {
+  Future<dynamic> updateDialog(flag, actionText, shopName) {
     return showDialog(
       context: context,
       builder: (context) => Center(
-        child: Stack(
-          children: [
-            const SizedBox(
-              width: 510,
-              height: 310,
-            ),
-            Positioned(
-              top: 10,
-              left: 10,
-              child: Container(
-                width: 500,
-                height: 300,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  color: Colors.pink[100],
-                ),
+        child: Container(
+          width: 550,
+          height: 300,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                spreadRadius: 1,
+                color: Colors.pink.shade100,
+                offset: const Offset(10, 10),
               ),
-            ),
-            Positioned(
-              child: Container(
-                width: 500,
-                height: 300,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  color: Colors.white,
-                ),
-                padding: const EdgeInsets.fromLTRB(50, 20, 20, 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: const [
-                        Icon(
-                          Icons.error_outline,
-                          color: Color.fromRGBO(228, 60, 137, 1),
-                          size: 70,
-                        ),
-                        Padding(padding: EdgeInsets.only(left: 20)),
-                        Text(
-                          'Alert',
-                          style: TextStyle(
-                            fontSize: 50,
-                            color: Color.fromRGBO(228, 60, 137, 1),
-                            fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.none,
-                            fontFamily: 'pg',
-                          ),
-                        ),
-                      ],
+            ],
+          ),
+          padding: const EdgeInsets.fromLTRB(50, 20, 20, 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: const [
+                  Icon(
+                    Icons.error_outline,
+                    color: Color.fromRGBO(228, 60, 137, 1),
+                    size: 70,
+                  ),
+                  Padding(padding: EdgeInsets.only(left: 20)),
+                  Text(
+                    'Alert',
+                    style: TextStyle(
+                      fontSize: 50,
+                      color: Color.fromRGBO(228, 60, 137, 1),
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.none,
+                      fontFamily: 'pg',
                     ),
-                    const Padding(padding: EdgeInsets.only(top: 10)),
-                    Row(
-                      children: [
-                        const Padding(padding: EdgeInsets.only(left: 10)),
-                        Text(
-                          'ต้องการ $actionText ใช่หรือไม่',
-                          style: const TextStyle(
-                            fontSize: 25,
-                            color: Color.fromRGBO(228, 60, 137, 1),
-                            fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.none,
-                            fontFamily: 'pg',
-                          ),
-                        ),
-                      ],
+                  ),
+                ],
+              ),
+              const Padding(padding: EdgeInsets.only(top: 10)),
+              Row(
+                children: [
+                  const Padding(padding: EdgeInsets.only(left: 10)),
+                  Text(
+                    'ต้องการ $actionText ใช่หรือไม่',
+                    style: const TextStyle(
+                      fontSize: 25,
+                      color: Color.fromRGBO(228, 60, 137, 1),
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.none,
+                      fontFamily: 'pg',
                     ),
-                    const Padding(padding: EdgeInsets.only(top: 80)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        ElevatedButton(
-                          style: const ButtonStyle(
-                            side: MaterialStatePropertyAll(
-                              BorderSide(
-                                style: BorderStyle.none,
-                              ),
-                            ),
-                            elevation: MaterialStatePropertyAll(0),
-                            backgroundColor: MaterialStatePropertyAll(
-                              Colors.white,
-                            ),
-                          ),
-                          onPressed: () {
+                  ),
+                ],
+              ),
+              const Padding(padding: EdgeInsets.only(top: 10)),
+              Row(
+                children: [
+                  const Padding(padding: EdgeInsets.only(left: 10)),
+                  Text(
+                    'ร้าน $shopName',
+                    style: const TextStyle(
+                      fontSize: 25,
+                      color: Color.fromRGBO(228, 60, 137, 1),
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.none,
+                      fontFamily: 'pg',
+                    ),
+                  ),
+                ],
+              ),
+              const Padding(padding: EdgeInsets.only(top: 60)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                    style: const ButtonStyle(
+                      side: MaterialStatePropertyAll(
+                        BorderSide(
+                          style: BorderStyle.none,
+                        ),
+                      ),
+                      elevation: MaterialStatePropertyAll(0),
+                      backgroundColor: MaterialStatePropertyAll(
+                        Colors.white,
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        updateFlag(flag, takeDocno).then((value) {
+                          Navigator.of(context).pop();
+                          loadData = false;
+                          getReport(typeSelect, flagTab, takeDateStart)
+                              .then((value) {
                             setState(() {
-                              updateFlag(flag, takeDocno).then((value) {
-                                Navigator.of(context).pop();
-                                loadData = false;
-                                getReport(typeSelect, flagTab, takeDateStart)
-                                    .then((value) {
-                                  setState(() {
-                                    dataList = value;
-                                    takeDocno =
-                                        dataList!.first.incomDocno.toString();
-                                    loadData = true;
-                                  });
-                                });
-                              });
+                              dataList = value;
+                              takeDocno = dataList!.first.incomDocno.toString();
+                              loadData = true;
                             });
-                          },
-                          child: Container(
-                            width: 180,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30),
-                              color: Colors.green,
-                            ),
-                            alignment: Alignment.center,
-                            child: const Text(
-                              'ใช่',
-                              style: TextStyle(
-                                fontSize: 30,
-                                color: Colors.white,
-                                decoration: TextDecoration.none,
-                              ),
-                            ),
-                          ),
+                          });
+                        });
+                      });
+                    },
+                    child: Container(
+                      width: 180,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: Colors.green,
+                      ),
+                      alignment: Alignment.center,
+                      child: const Text(
+                        'ใช่',
+                        style: TextStyle(
+                          fontSize: 30,
+                          color: Colors.white,
+                          decoration: TextDecoration.none,
                         ),
-                        ElevatedButton(
-                          style: const ButtonStyle(
-                            side: MaterialStatePropertyAll(
-                              BorderSide(
-                                style: BorderStyle.none,
-                              ),
-                            ),
-                            elevation: MaterialStatePropertyAll(0),
-                            backgroundColor: MaterialStatePropertyAll(
-                              Colors.white,
-                            ),
-                          ),
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: Container(
-                            width: 180,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30),
-                              color: Colors.red,
-                            ),
-                            alignment: Alignment.center,
-                            child: const Text(
-                              'ไม่ใช่',
-                              style: TextStyle(
-                                fontSize: 30,
-                                color: Colors.white,
-                                decoration: TextDecoration.none,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ],
-                ),
+                  ),
+                  ElevatedButton(
+                    style: const ButtonStyle(
+                      side: MaterialStatePropertyAll(
+                        BorderSide(
+                          style: BorderStyle.none,
+                        ),
+                      ),
+                      elevation: MaterialStatePropertyAll(0),
+                      backgroundColor: MaterialStatePropertyAll(
+                        Colors.white,
+                      ),
+                    ),
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Container(
+                      width: 180,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: Colors.red,
+                      ),
+                      alignment: Alignment.center,
+                      child: const Text(
+                        'ไม่ใช่',
+                        style: TextStyle(
+                          fontSize: 30,
+                          color: Colors.white,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -845,6 +846,7 @@ class _FirstPageState extends State<FirstPage>
           setState(() {
             dataList = value;
             takeDocno = dataList!.first.incomDocno.toString();
+            shopName = dataList!.first.shopname!;
             loadData = true;
           });
         });
@@ -909,6 +911,7 @@ class _FirstPageState extends State<FirstPage>
                                 dataList = value;
                                 takeDocno =
                                     dataList!.first.incomDocno.toString();
+                                shopName = dataList!.first.shopname!;
                                 loadData = true;
                               });
                             });
@@ -921,6 +924,7 @@ class _FirstPageState extends State<FirstPage>
                                 dataList = value;
                                 takeDocno =
                                     dataList!.first.incomDocno.toString();
+                                shopName = dataList!.first.shopname!;
                                 loadData = true;
                               });
                             });
@@ -933,6 +937,7 @@ class _FirstPageState extends State<FirstPage>
                                 dataList = value;
                                 takeDocno =
                                     dataList!.first.incomDocno.toString();
+                                shopName = dataList!.first.shopname!;
                                 loadData = true;
                               });
                             });
@@ -945,6 +950,7 @@ class _FirstPageState extends State<FirstPage>
                                 dataList = value;
                                 takeDocno =
                                     dataList!.first.incomDocno.toString();
+                                shopName = dataList!.first.shopname!;
                                 loadData = true;
                               });
                             });
@@ -957,6 +963,7 @@ class _FirstPageState extends State<FirstPage>
                                 dataList = value;
                                 takeDocno =
                                     dataList!.first.incomDocno.toString();
+                                shopName = dataList!.first.shopname!;
                                 loadData = true;
                               });
                             });
@@ -969,6 +976,7 @@ class _FirstPageState extends State<FirstPage>
                                 dataList = value;
                                 takeDocno =
                                     dataList!.first.incomDocno.toString();
+                                shopName = dataList!.first.shopname!;
                                 loadData = true;
                               });
                             });
@@ -981,6 +989,7 @@ class _FirstPageState extends State<FirstPage>
                                 dataList = value;
                                 takeDocno =
                                     dataList!.first.incomDocno.toString();
+                                shopName = dataList!.first.shopname!;
                                 loadData = true;
                               });
                             });
@@ -1064,9 +1073,8 @@ class _FirstPageState extends State<FirstPage>
                                         .then((value) {
                                       setState(() {
                                         dataList = value;
-
-                                        takeDocno = dataList!.first.incomDocno
-                                            .toString();
+                                        takeDocno = dataList!.first.incomDocno!;
+                                        shopName = dataList!.first.shopname!;
                                         loadData = true;
                                       });
                                     });
@@ -1120,6 +1128,7 @@ class _FirstPageState extends State<FirstPage>
         voucherTot = 0;
         chequeTot = 0;
         payinTot = 0;
+        fccoinTot = 0;
         uSDQty = 0;
         uSDRate = 0;
         sGDQty = 0;
@@ -1184,6 +1193,7 @@ class _FirstPageState extends State<FirstPage>
         foreignTot = 0;
         sumForeingCash = 0;
         sumTHCash = 0;
+
         if (totalList!.first.idIncom == '') {
         } else {
           for (final total in totalList!) {
@@ -1301,6 +1311,7 @@ class _FirstPageState extends State<FirstPage>
           aUDRate = double.parse(totalList!.first.aUDRate.toString());
           eURRate = double.parse(totalList!.first.eURRate.toString());
 
+          print(fccoinTot);
           sumList!.add(
             TotalData(
               creditTot: creditTot.toString(),
@@ -1341,6 +1352,7 @@ class _FirstPageState extends State<FirstPage>
               fccoinTot: fccoinTot.toString(),
             ),
           );
+          print(jsonEncode(sumList));
         }
       });
     });
@@ -1552,11 +1564,14 @@ class _FirstPageState extends State<FirstPage>
           padding: EdgeInsets.only(left: 20),
         ),
         InkWell(
-          onTap: flagTab == 'A' || flagTab == 'C' || flagTab == 'Y'
+          onTap: flagTab == 'A' ||
+                  flagTab == 'C' ||
+                  flagTab == 'Y' ||
+                  takeDocno == ''
               ? null
               : () {
                   setState(() {
-                    updateDialog('Y', 'Complete');
+                    updateDialog('Y', 'Complete', shopName);
                   });
                 },
           child: Container(
@@ -1564,7 +1579,10 @@ class _FirstPageState extends State<FirstPage>
             height: 60,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30),
-              color: flagTab == 'A' || flagTab == 'C' || flagTab == 'Y'
+              color: flagTab == 'A' ||
+                      flagTab == 'C' ||
+                      flagTab == 'Y' ||
+                      takeDocno == ''
                   ? Colors.grey
                   : Colors.blue[200],
             ),
@@ -1583,11 +1601,14 @@ class _FirstPageState extends State<FirstPage>
         ),
         const Padding(padding: EdgeInsets.only(left: 20)),
         InkWell(
-          onTap: flagTab == 'N' || flagTab == 'C' || flagTab == 'A'
+          onTap: flagTab == 'N' ||
+                  flagTab == 'C' ||
+                  flagTab == 'A' ||
+                  takeDocno == ''
               ? null
               : () {
                   setState(() {
-                    updateDialog('A', 'Approve');
+                    updateDialog('A', 'Approve', shopName);
                   });
                 },
           child: Container(
@@ -1595,7 +1616,10 @@ class _FirstPageState extends State<FirstPage>
             height: 60,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30),
-              color: flagTab == 'N' || flagTab == 'C' || flagTab == 'A'
+              color: flagTab == 'N' ||
+                      flagTab == 'C' ||
+                      flagTab == 'A' ||
+                      takeDocno == ''
                   ? Colors.grey
                   : Colors.purple[200],
             ),
@@ -1614,11 +1638,11 @@ class _FirstPageState extends State<FirstPage>
         ),
         const Padding(padding: EdgeInsets.only(left: 20)),
         InkWell(
-          onTap: flagTab == 'A' || flagTab == 'C'
+          onTap: flagTab == 'A' || flagTab == 'C' || takeDocno == ''
               ? null
               : () {
                   setState(() {
-                    updateDialog('C', 'Cancel');
+                    updateDialog('C', 'Cancel', shopName);
                   });
                 },
           child: Container(
@@ -1626,7 +1650,7 @@ class _FirstPageState extends State<FirstPage>
             height: 60,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30),
-              color: flagTab == 'A' || flagTab == 'C'
+              color: flagTab == 'A' || flagTab == 'C' || takeDocno == ''
                   ? Colors.grey
                   : Colors.red[200],
             ),
@@ -1768,6 +1792,7 @@ class _FirstPageState extends State<FirstPage>
                 setState(() {
                   dataList = value;
                   takeDocno = dataList!.first.incomDocno.toString();
+                  shopName = dataList!.first.shopname!;
                   loadData = true;
                 });
               });
@@ -1881,6 +1906,7 @@ class _FirstPageState extends State<FirstPage>
                                 selectedRowIndexComplete =
                                     (selected == true ? index : null)!;
                                 takeDocno = row.incomDocno.toString();
+                                shopName = row.shopname!;
                               });
                             },
                       selected: false,
@@ -2170,6 +2196,7 @@ class _FirstPageState extends State<FirstPage>
                                 selectedRowIndexApprove =
                                     (selected == true ? index : null)!;
                                 takeDocno = row.incomDocno.toString();
+                                shopName = row.shopname!;
                               });
                             },
                       cells: [
@@ -2321,6 +2348,7 @@ class _FirstPageState extends State<FirstPage>
                                 selectedRowIndexNew =
                                     (selected == true ? index : null)!;
                                 takeDocno = row.incomDocno.toString();
+                                shopName = row.shopname!;
                               });
                             },
                       selected: false,
