@@ -314,7 +314,7 @@ class _AddNewPageState extends State<AddNewPage> {
       cerrencyTab = false;
       remarkTab = false;
       today = day;
-      takeDateTime = DateFormat('yyyy-MM-dd').format(today);
+      takeDateTime = DateFormat('yyyy-MM-dd').format(widget.date);
       print(takeDateTime);
     });
     //print(sendDate);
@@ -485,13 +485,8 @@ class _AddNewPageState extends State<AddNewPage> {
                                 refund.text,
                                 firstCollection.text,
                               ).then((value) {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        FirstPage(date: widget.date),
-                                  ),
-                                );
+                                Navigator.of(context).pop([1]);
+                                Navigator.of(context).pop([1]);
                               });
                             });
                           },
@@ -559,7 +554,7 @@ class _AddNewPageState extends State<AddNewPage> {
   @override
   void initState() {
     super.initState();
-    takeDateTime = DateFormat('yyyy-MM-dd').format(today);
+    takeDateTime = DateFormat('yyyy-MM-dd').format(widget.date);
     takeShopChar = widget.typeSelect;
     takeShopName = widget.typeName;
     print(takeShopChar);
@@ -700,7 +695,7 @@ class _AddNewPageState extends State<AddNewPage> {
                 formatButtonVisible: false,
                 titleCentered: true,
               ),
-              selectedDayPredicate: (day) => isSameDay(day, today),
+              selectedDayPredicate: (day) => isSameDay(day, widget.date),
               availableGestures: AvailableGestures.all,
               focusedDay: today,
               firstDay: DateTime.utc(1980),
@@ -6764,7 +6759,7 @@ class _AddNewPageState extends State<AddNewPage> {
                                           value.first.deptname.toString();
                                       takeDeptCode =
                                           value.first.deptcode.toString();
-                                          nameT = value.first.nameT.toString();
+                                      nameT = value.first.nameT.toString();
                                     });
                                   });
                                 },

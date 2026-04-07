@@ -1522,8 +1522,8 @@ class _FirstPageState extends State<FirstPage>
           padding: EdgeInsets.only(left: 20),
         ),
         InkWell(
-          onTap: () {
-            Navigator.push(
+          onTap: () async {
+            final result = await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => AddNewPage(
@@ -1533,6 +1533,19 @@ class _FirstPageState extends State<FirstPage>
                 ),
               ),
             );
+            if (result != null) {
+              setState(() {
+                loadData = false;
+                print('fdfdff');
+                getReport(typeSelect, flagTab, takeDateStart).then((value) {
+                  setState(() {
+                    dataList = value;
+                    takeDocno = dataList!.first.incomDocno.toString();
+                    loadData = true;
+                  });
+                });
+              });
+            }
           },
           child: Container(
             width: 160,
@@ -1718,8 +1731,10 @@ class _FirstPageState extends State<FirstPage>
                 lastDate: DateTime(2100),
               );
               if (pickedDate != null) {
-                dateStart.text = DateFormat('dd/MM/yyyy').format(pickedDate);
-                takeDateStart = DateFormat('yyyy-MM-dd').format(pickedDate);
+                setState(() {
+                  dateStart.text = DateFormat('dd/MM/yyyy').format(pickedDate);
+                  takeDateStart = DateFormat('yyyy-MM-dd').format(pickedDate);
+                });
               } else {}
             },
           ),
@@ -1957,9 +1972,9 @@ class _FirstPageState extends State<FirstPage>
                                 onPressed: row.incomDocno!.isEmpty ||
                                         dataList!.first.incomDocno!.isEmpty
                                     ? null
-                                    : () {
+                                    : () async {
                                         selectedRowIndexComplete = index;
-                                        showDialog(
+                                        final result = await showDialog(
                                           context: context,
                                           builder: (context) => PreviewPage(
                                             list: [row],
@@ -1968,6 +1983,22 @@ class _FirstPageState extends State<FirstPage>
                                             date: DateTime.parse(takeDateStart),
                                           ),
                                         );
+                                        if (result != null) {
+                                          setState(() {
+                                            loadData = false;
+                                            getReport(typeSelect, flagTab,
+                                                    takeDateStart)
+                                                .then((value) {
+                                              setState(() {
+                                                dataList = value;
+                                                takeDocno = dataList!
+                                                    .first.incomDocno
+                                                    .toString();
+                                                loadData = true;
+                                              });
+                                            });
+                                          });
+                                        }
                                       },
                               ),
                             ],
@@ -2094,8 +2125,8 @@ class _FirstPageState extends State<FirstPage>
                                 onPressed: row.incomDocno!.isEmpty ||
                                         dataList!.first.incomDocno!.isEmpty
                                     ? null
-                                    : () {
-                                        showDialog(
+                                    : () async {
+                                        final result = await showDialog(
                                           context: context,
                                           builder: (context) => PreviewPage(
                                             list: [row],
@@ -2104,6 +2135,22 @@ class _FirstPageState extends State<FirstPage>
                                             date: DateTime.parse(takeDateStart),
                                           ),
                                         );
+                                        if (result != null) {
+                                          setState(() {
+                                            loadData = false;
+                                            getReport(typeSelect, flagTab,
+                                                    takeDateStart)
+                                                .then((value) {
+                                              setState(() {
+                                                dataList = value;
+                                                takeDocno = dataList!
+                                                    .first.incomDocno
+                                                    .toString();
+                                                loadData = true;
+                                              });
+                                            });
+                                          });
+                                        }
                                       },
                               ),
                             ],
@@ -2246,8 +2293,11 @@ class _FirstPageState extends State<FirstPage>
                                 onPressed: row.incomDocno!.isEmpty ||
                                         dataList!.first.incomDocno!.isEmpty
                                     ? null
-                                    : () {
-                                        showDialog(
+                                    : () async {
+                                        setState(() {
+                                          selectedRowIndexApprove = index;
+                                        });
+                                        final result = await showDialog(
                                           context: context,
                                           builder: (context) => PreviewPage(
                                             list: [row],
@@ -2256,6 +2306,22 @@ class _FirstPageState extends State<FirstPage>
                                             date: DateTime.parse(takeDateStart),
                                           ),
                                         );
+                                        if (result != null) {
+                                          setState(() {
+                                            loadData = false;
+                                            getReport(typeSelect, flagTab,
+                                                    takeDateStart)
+                                                .then((value) {
+                                              setState(() {
+                                                dataList = value;
+                                                takeDocno = dataList!
+                                                    .first.incomDocno
+                                                    .toString();
+                                                loadData = true;
+                                              });
+                                            });
+                                          });
+                                        }
                                       },
                               ),
                             ],
@@ -2404,20 +2470,35 @@ class _FirstPageState extends State<FirstPage>
                                 onPressed: row.incomDocno!.isEmpty ||
                                         dataList!.first.incomDocno!.isEmpty
                                     ? null
-                                    : () {
+                                    : () async {
                                         setState(() {
                                           selectedRowIndexNew = index;
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) => PreviewPage(
-                                              list: [row],
-                                              typeSelect: typeSelect,
-                                              flagTab: flagTab,
-                                              date:
-                                                  DateTime.parse(takeDateStart),
-                                            ),
-                                          );
                                         });
+                                        final result = await showDialog(
+                                          context: context,
+                                          builder: (context) => PreviewPage(
+                                            list: [row],
+                                            typeSelect: typeSelect,
+                                            flagTab: flagTab,
+                                            date: DateTime.parse(takeDateStart),
+                                          ),
+                                        );
+                                        if (result != null) {
+                                          setState(() {
+                                            loadData = false;
+                                            getReport(typeSelect, flagTab,
+                                                    takeDateStart)
+                                                .then((value) {
+                                              setState(() {
+                                                dataList = value;
+                                                takeDocno = dataList!
+                                                    .first.incomDocno
+                                                    .toString();
+                                                loadData = true;
+                                              });
+                                            });
+                                          });
+                                        }
                                       },
                               ),
                             ],

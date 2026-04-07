@@ -472,13 +472,8 @@ class _PreviewPageState extends State<PreviewPage> {
                                 firstCollection.text,
                                 "N",
                               ).then((value) {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        FirstPage(date: widget.date),
-                                  ),
-                                );
+                                Navigator.of(context).pop([1]);
+                                Navigator.of(context).pop([1]);
                               });
                             });
                           },
